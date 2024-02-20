@@ -27,6 +27,10 @@ _DICT_FIGURE_SAVE_CONFIG = {
     # 'width': 700,
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
+_FLOAT_MAX_R = 0.0
+_FLOAT_MAX_THETA = 0.0
+_DICT_CLUSTER_MODEL = {}
+_LIST_MODEL_NAMES = []
 
 
 def _grid_search(df_left_input, string_reference_model, list_measures):
