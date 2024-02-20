@@ -118,11 +118,9 @@ def display_main_content(string_button_value):
     if string_button_value == 'bioinfo':
         return overview_detail.layout, 'Case Study - BioInfo'
     elif string_button_value == 'bioinfo-time':
-        # return small_multiple.layout
         return '404', 'Case Study - BioInfo and Time'
     elif string_button_value == 'gp':
-        # return small_multiple.layout
-        return '404', 'Case Study - Gaussian Processes'
+        return small_multiple.layout, 'Case Study - Gaussian Processes'
     else:
         return '404'
 

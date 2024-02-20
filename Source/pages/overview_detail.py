@@ -414,6 +414,7 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
     return chart_left, chart_left_size_legend, chart_right, list_warnings
 
 
+# =============================================================================
 df_wine_data = load_wine(return_X_y=False, as_frame=True)['data']
 df_wine_data['od_diluted'] = df_wine_data['od280/od315_of_diluted_wines']
 df_wine_data.drop(['od280/od315_of_diluted_wines', 'proline'], axis=1,
@@ -428,6 +429,7 @@ _STRING_MID_TYPE = 'normalized'
  list_warnings) = _tuple_create_both_diagrams(
      _DF_INPUT, _STRING_REFERENCE_MODEL, _STRING_DIAGRAM_TYPE,
      _STRING_MID_TYPE)
+# =============================================================================
 
 layout = [
     dbc.Col([
