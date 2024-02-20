@@ -227,6 +227,7 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
             string_angle_measure = 'Angle_NMI'
             list_relevant_measures = ['Root Entropy', 'Normalized MI', 'RVI']
 
+    global _FLOAT_MAX_THETA
     _FLOAT_MAX_THETA = 90.0 if df_left_input[
         string_angle_measure].max() < 90 else 180.0
 

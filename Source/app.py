@@ -49,7 +49,7 @@ layout_first_row = dbc.Row([
             style={'margin-left': 0, 'margin-right': 0}),
     dbc.Col(
         html.Div(
-            html.H1("Case Study --- Data set NAME"),
+            html.H1("Case Study - Data set NAME", id='main_title'),
             style={"font-family": 'open sans', 'margin-top': 40,
                    'margin-bottom': 40}),
         width=5,
@@ -111,17 +111,18 @@ dash_app.validation_layout = dbc.Container(
 
 @callback(
     Output('row_main_content', 'children'),
+    Output('main_title', 'children'),
     Input('radio_button', 'value')
 )
 def display_main_content(string_button_value):
     if string_button_value == 'bioinfo':
-        return overview_detail.layout
+        return overview_detail.layout, 'Case Study - BioInfo'
     elif string_button_value == 'bioinfo-time':
         # return small_multiple.layout
-        return '404'
+        return '404', 'Case Study - BioInfo and Time'
     elif string_button_value == 'gp':
         # return small_multiple.layout
-        return '404'
+        return '404', 'Case Study - Gaussian Processes'
     else:
         return '404'
 
