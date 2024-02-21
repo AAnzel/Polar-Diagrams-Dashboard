@@ -133,7 +133,9 @@ def _list_create_rows(df_input, string_reference_model,
                         figure=chart_result,
                         config={
                             'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
-                            'displayModeBar': False,
+                            'modeBarButtonsToRemove': [
+                                'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut',
+                                'select', 'autoScale', 'resetScale'],
                             'displaylogo': False,
                             'showAxisDragHandles': False},
                         style={'margin-bottom': 0, 'margin-top': 0,
@@ -143,16 +145,6 @@ def _list_create_rows(df_input, string_reference_model,
                 align='start',
                 style={'margin-left': 0, 'margin-right': 0})
         )
-        '''
-                    html.Div(
-                        dbc.Alert(
-                            list_warnings,
-                            color="warning",
-                            id='alert-warnings',
-                            is_open=True if list_warnings else False,
-                            className="d-flex align-items-left",
-                            style={'margin-top': 30}))
-        '''
 
     return list_rows
 

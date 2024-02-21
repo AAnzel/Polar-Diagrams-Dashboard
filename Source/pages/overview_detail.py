@@ -255,9 +255,9 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
         height=_INT_CHART_HEIGHT - float_height_subtraction,
         margin=dict_margin)
     chart_left_size_legend.update_layout(
-        width=round(_INT_CHART_WIDTH/6),
+        width=round(_INT_CHART_WIDTH/5),
         height=90,
-        margin={'r': 10, 'l': 20, 't': 0, 'b': 0})
+        margin={'r': 50, 'l': 10, 't': 0, 'b': 0})
 
     return chart_left, chart_left_size_legend, dict_model_cluster
 
@@ -455,8 +455,9 @@ layout = [
             figure=chart_left_size_legend,
             config={
                 'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
-                'displayModeBar': True,
-                'staticPlot': True,
+                'modeBarButtonsToRemove': [
+                    'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
+                    'autoScale', 'resetScale'],
                 'displaylogo': False,
                 'showAxisDragHandles': False},
             style={'margin-bottom': 0, 'margin-top': 0}),
@@ -484,9 +485,8 @@ layout = [
             config={
                 'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
                 'modeBarButtonsToRemove': [
-                    'zoom', 'pan', 'lasso', 'zoomIn',
-                    'zoomOut', 'select', 'autoScale',
-                    'resetScale'],
+                    'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
+                    'autoScale', 'resetScale'],
                 'displaylogo': False,
                 'showAxisDragHandles': False})],
             width=True,
