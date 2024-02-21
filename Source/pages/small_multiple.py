@@ -5,9 +5,9 @@ import pandas as pd
 import polar_diagrams
 
 
-from dash import dcc, html, Input, Output, callback
+from dash import dcc, html, Input, Output, callback, Patch, State
 import dash_bootstrap_components as dbc
-# from dash.exceptions import PreventUpdate
+from dash.exceptions import PreventUpdate
 # import plotly.graph_objects as go
 
 
@@ -85,8 +85,11 @@ def _chart_warning_create(df_input, string_reference_model,
     '''
     chart_result.update_layout(
         showlegend=False,
-        width=round(_INT_CHART_WIDTH / 3.6),
-        height=_INT_CHART_HEIGHT - 230)
+        polar_radialaxis_title_font_size=12,
+        title_font_size=12,
+        width=round(_INT_CHART_WIDTH / 2.6),
+        height=_INT_CHART_HEIGHT - 100,
+        margin={'l': 50, 'r': 50})
     # width=round(_INT_CHART_WIDTH / float_width_division),
     # height=_INT_CHART_HEIGHT - float_height_subtraction,
     # margin=dict_margin)
@@ -98,18 +101,37 @@ def _list_create_rows(df_input, string_reference_model,
                       string_diagram_type='taylor', string_mid_type='scaled'):
     list_rows = []
     list_row = []
+    list_tuple_pretty_names = list(
+        zip(list_pretty_names, list_pretty_names[1:]))
+
     for int_i, tuple_dfs in enumerate(list(zip(df_input, df_input[1:]))):
-        if int_i % 4 == 0:
+        if int_i % 3 == 0:
             list_rows.append(dbc.Row(list_row, id='Row_' + str(int_i/4)))
             list_row = []
+
+        # We only want to show 2 rows of 4 diagrams
+        if int_i == 6:
+            break
 
         chart_result, list_warnings = _chart_warning_create(
             list(tuple_dfs), string_reference_model, string_diagram_type,
             string_mid_type)
 
+        if int_i == 3:
+            chart_result.update_layout(
+                height=_INT_CHART_HEIGHT - 50,
+
+                showlegend=True, legend_xref='paper',
+                legend_yref='paper', legend_xanchor='left',
+                legend_yanchor='bottom', legend_orientation='h', legend_y=-0.6)
+
         list_row.append(
             dbc.Col(
                 [
+                    html.H6(['Version 0 (' + list_tuple_pretty_names[int_i][0]
+                             + ')', html.Br(), 'Version 1 (' +
+                            list_tuple_pretty_names[int_i][1] + ')'],
+                            style={'margin-top': 20}),
                     dcc.Graph(
                         id="chart_" + str(int_i),
                         figure=chart_result,
@@ -118,7 +140,14 @@ def _list_create_rows(df_input, string_reference_model,
                             'displayModeBar': True,
                             'displaylogo': False,
                             'showAxisDragHandles': False},
-                        style={'margin-bottom': 0, 'margin-top': 0}),
+                        style={'margin-bottom': 0, 'margin-top': 0,
+                               'margin-left': 0, 'margin-right': 0}),
+                ],
+                width=4,
+                align='start',
+                style={'margin-left': 0, 'margin-right': 0})
+        )
+        '''
                     html.Div(
                         dbc.Alert(
                             list_warnings,
@@ -127,11 +156,7 @@ def _list_create_rows(df_input, string_reference_model,
                             is_open=True if list_warnings else False,
                             className="d-flex align-items-left",
                             style={'margin-top': 30}))
-                ],
-                width=3,
-                align='start',
-                style={'margin-left': 0, 'margin-right': 0})
-        )
+        '''
 
     return list_rows
 
@@ -176,3 +201,69 @@ def update_output(string_selected_diagram_type):
         string_diagram_type, string_mid_type)
 
     return list_rows
+
+
+@callback(
+    Output(component_id="chart_0", component_property="figure",
+           allow_duplicate=True),
+    Output(component_id="chart_1", component_property="figure",
+           allow_duplicate=True),
+    Output(component_id="chart_2", component_property="figure",
+           allow_duplicate=True),
+    Output(component_id="chart_4", component_property="figure",
+           allow_duplicate=True),
+    Output(component_id="chart_5", component_property="figure",
+           allow_duplicate=True),
+    Input(component_id="chart_3", component_property="restyleData"),
+    State('chart_0', 'figure'),
+    State('chart_1', 'figure'),
+    State('chart_2', 'figure'),
+    State('chart_3', 'figure'),
+    State('chart_4', 'figure'),
+    State('chart_5', 'figure'),
+    prevent_initial_call=True,
+)
+def _list_update_legends(list_legend_points, dict_0, dict_1, dict_2, dict_3,
+                         dict_4, dict_5):
+
+    chart_0 = Patch()
+    chart_1 = Patch()
+    chart_2 = Patch()
+    # chart_3 = Patch()
+    chart_4 = Patch()
+    chart_5 = Patch()
+
+    # We check if we have an event and if the click was not empty
+    if list_legend_points and list_legend_points[0]:
+        # ----- One legend click gives the following output:
+        # [{"visible": ["legendonly"]}, [10]]
+        # [{"visible": [true]}, [1]]
+        # ----- Group click:
+        # [{'visible': ['legendonly', 'legendonly', True, True, 'legendonly',
+        #               'legendonly', 'legendonly', 'legendonly', 'legendonly',
+        #               'legendonly', 'legendonly', 'legendonly']},
+        #  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]
+        # ----- Empty legend click:
+        # [{}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]
+
+        print(list_legend_points)
+        if list_legend_points:
+            for int_i, int_legend_point in enumerate(list_legend_points[1]):
+                if isinstance(
+                    list_legend_points[0]['visible'][int_i],
+                        bool) and list_legend_points[0]['visible'][int_i]:
+                    chart_0['data'][int_legend_point]['visible'] = True
+                    chart_1['data'][int_legend_point]['visible'] = True
+                    chart_2['data'][int_legend_point]['visible'] = True
+                    chart_4['data'][int_legend_point]['visible'] = True
+                    chart_5['data'][int_legend_point]['visible'] = True
+                else:
+                    chart_0['data'][int_legend_point]['visible'] = False
+                    chart_1['data'][int_legend_point]['visible'] = False
+                    chart_2['data'][int_legend_point]['visible'] = False
+                    chart_4['data'][int_legend_point]['visible'] = False
+                    chart_5['data'][int_legend_point]['visible'] = False
+    else:
+        raise PreventUpdate
+
+    return chart_0, chart_1, chart_2, chart_4, chart_5
