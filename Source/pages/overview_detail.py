@@ -190,6 +190,8 @@ def _chart_create_left_chart(df_grouped_data, string_reference_model,
                'tickvals': list_legend_ticks, 'title': 'Cluster size',
                'linecolor': _STR_COLOR_SELECTION_GREY},
         template='simple_white',
+        dragmode=False,
+        hovermode=False,
         width=round(_INT_CHART_WIDTH/5),
         height=110,
         margin={'r': 50, 'l': 10, 't': 0, 'b': 0})

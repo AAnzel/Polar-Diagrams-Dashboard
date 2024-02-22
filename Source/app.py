@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 
 from pages import overview_detail, small_multiple
 
+# TODO: Cache all figures and visualize cached values
 
 dash_app = Dash("Polar Diagrams Dashboard",
                 external_stylesheets=[dbc.themes.BOOTSTRAP,
@@ -23,9 +24,9 @@ layout_first_row = dbc.Row([
                 html.H4('Case Studies'),
                 dcc.RadioItems(
                     options=[
-                        {'label': html.Span('Overview+Detail - Bioinfo Evaluation', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo'},  # noqa
-                        {'label': html.Span('Overview+Detail - Bioinfo Training time', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo-time'},  # noqa
-                        {'label': html.Span('Small Multiple - Gaussian Processes', style={'font-size': 20, 'padding-left': 12}), 'value': 'gp'},  # noqa
+                        {'label': html.Span('1. Overview+Detail - Machine Learning (ML)', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo'},  # noqa
+                        {'label': html.Span('2. Overview+Detail - ML with Training Time', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo-time'},  # noqa
+                        {'label': html.Span('3. Small Multiple - Gaussian Processes', style={'font-size': 20, 'padding-left': 12}), 'value': 'gp'},  # noqa
                         ],
                     value='bioinfo',
                     labelStyle={"display": "flex",
@@ -34,16 +35,50 @@ layout_first_row = dbc.Row([
                     style={'margin-bottom': 80},
                     ),
                 html.H4('Source Code and Data'),
+                html.H6('Polar Diagram Library'),
+                html.P(['Anžel, A., Heider, D., & Hattab, G. (2023). ' +
+                        'Interactive polar diagrams for model comparison.' +
+                        ' In Computer Methods and Programs in Biomedicine ' +
+                        '(Vol. 242, p. 107843). Elsevier BV. ',
+                        html.A(
+                            'https://doi.org/10.1016/j.cmpb.2023.107843',
+                            href='https://doi.org/10.1016/j.cmpb.2023.107843',
+                            target='_blank', style={'color': 'inherit'})],
+                       style={'font-size': 12, 'color': 'dimgray'}),
+                html.H5('Data Sets'),
+                html.H6('1. & 2. Overview+Detail'),
+                html.P(['De Cock, D. (2011). Ames, Iowa: Alternative to ' +
+                        'the Boston Housing Data as an End of Semester ' +
+                        'Regression Project. In Journal of Statistics ' +
+                        'Education (Vol. 19, Issue 3). Informa UK Limited. ',
+                        html.A(
+                            'https://doi.org/10.1080/10691898.2011.11889627',
+                            href='https://doi.org/10.1080/10691898.2011.11889627', # noqa
+                            target='_blank', style={'color': 'inherit'})],
+                       style={'font-size': 12, 'color': 'dimgray'}),
+                html.H6('3. Small Multiple'),
+                html.P(['Yang, Z., Dai, X., Dubey, A., Hirche, S., & Hattab,' +
+                        'G. (2024). Whom to Trust? Elective Learning for ' +
+                        'Distributed Gaussian Process Regression (Version ' +
+                        '1). arXiv. ',
+                        html.A(
+                            'https://doi.org/10.48550/ARXIV.2402.03014',
+                            href='https://doi.org/10.48550/ARXIV.2402.03014',
+                            target='_blank', style={'color': 'inherit'})],
+                       style={'font-size': 12, 'color': 'dimgray'}),
                 html.A(
-                    html.I(className="fa-brands fa-github fa-4x"),
-                    href='https://github.com/AAnzel/Polar-Diagrams-Dashboard',  # noqa
-                    target='_blank', style={'color': 'inherit'})
+                    html.I(className="fa-brands fa-github fa-5x",
+                           style={'margin-top': 40}),
+                    href='https://github.com/AAnzel/Polar-Diagrams-Dashboard',
+                    target='_blank',
+                    className="d-flex justify-content-center",
+                    style={'color': 'inherit'})
                 ],
             id="offcanvas",
             title=html.H2("Polar Diagrams Dashboard",
                           style={'margin-bottom': 40}),
             is_open=False,
-            style={'width': '25%', 'height': '50%'})],
+            style={'width': '25%', 'height': '100%'})],
             width=1,
             align='center',
             style={'margin-left': 0, 'margin-right': 0}),
