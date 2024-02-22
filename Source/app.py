@@ -47,13 +47,13 @@ layout_first_row = dbc.Row([
                        style={'font-size': 12, 'color': 'dimgray'}),
                 html.H5('Data Sets'),
                 html.H6('1. & 2. Overview+Detail'),
-                html.P(['De Cock, D. (2011). Ames, Iowa: Alternative to ' +
-                        'the Boston Housing Data as an End of Semester ' +
-                        'Regression Project. In Journal of Statistics ' +
-                        'Education (Vol. 19, Issue 3). Informa UK Limited. ',
+                html.P(['Horton, P., & Nakai, K. (1996, June). A ' +
+                        'probabilistic classification system for predicting ' +
+                        'the cellular localization sites of proteins. In ' +
+                        'Ismb (Vol. 4, pp. 109-115). ',
                         html.A(
-                            'https://doi.org/10.1080/10691898.2011.11889627',
-                            href='https://doi.org/10.1080/10691898.2011.11889627', # noqa
+                            'https://dl.acm.org/doi/10.5555/645631.662879',
+                            href='https://dl.acm.org/doi/10.5555/645631.662879', # noqa
                             target='_blank', style={'color': 'inherit'})],
                        style={'font-size': 12, 'color': 'dimgray'}),
                 html.H6('3. Small Multiple'),
@@ -84,7 +84,7 @@ layout_first_row = dbc.Row([
             style={'margin-left': 0, 'margin-right': 0}),
     dbc.Col(
         html.Div(
-            html.H1("Case Study - Data set NAME", id='main_title'),
+            html.H1("Case Study", id='main_title'),
             style={"font-family": 'open sans', 'margin-top': 40,
                    'margin-bottom': 40}),
         width=5,
@@ -151,9 +151,9 @@ dash_app.validation_layout = dbc.Container(
 )
 def display_main_content(string_button_value):
     if string_button_value == 'bioinfo':
-        return overview_detail.layout, 'Case Study - BioInfo'
+        return overview_detail.layout, 'Case Study - Machine Learning (ML)'
     elif string_button_value == 'bioinfo-time':
-        return '404', 'Case Study - BioInfo and Time'
+        return '404', 'Case Study - ML with Training Time'
     elif string_button_value == 'gp':
         return small_multiple.layout, 'Case Study - Gaussian Processes'
     else:
