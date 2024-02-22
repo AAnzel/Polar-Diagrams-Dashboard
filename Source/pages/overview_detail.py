@@ -171,7 +171,8 @@ def _chart_create_left_chart(df_grouped_data, string_reference_model,
 
     chart_left.update_layout(
         coloraxis={'colorscale': 'gray', 'showscale': False,
-                   'cmin': float_cmin, 'cmax': float_cmax})
+                   'cmin': float_cmin, 'cmax': float_cmax},
+        dragmode='zoom', clickmode='event+select', hovermode=False)
 
     list_legend_ticks = list(df_grouped_data['Cluster Count'].unique())
 
@@ -186,7 +187,12 @@ def _chart_create_left_chart(df_grouped_data, string_reference_model,
         yaxis={'zeroline': False, 'showline': False, 'showticklabels': False,
                'ticks': '', 'showgrid': False},
         xaxis={'zeroline': False, 'tickmode': 'array', 'showgrid': False,
-               'tickvals': list_legend_ticks}, template='simple_white')
+               'tickvals': list_legend_ticks, 'title': 'Cluster size',
+               'linecolor': _STR_COLOR_SELECTION_GREY},
+        template='simple_white',
+        width=round(_INT_CHART_WIDTH/5),
+        height=110,
+        margin={'r': 50, 'l': 10, 't': 0, 'b': 0})
 
     return chart_left, chart_left_size_legend
 
@@ -250,14 +256,9 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
                    'b': 0} if _FLOAT_MAX_THETA == 180.0 else {'t': 10, 'b': 20,
                                                               'r': 0}
     chart_left.update_layout(
-        dragmode='zoom', clickmode='event+select', hovermode=False,
         width=round(_INT_CHART_WIDTH / float_width_division),
         height=_INT_CHART_HEIGHT - float_height_subtraction,
         margin=dict_margin)
-    chart_left_size_legend.update_layout(
-        width=round(_INT_CHART_WIDTH/5),
-        height=90,
-        margin={'r': 50, 'l': 10, 't': 0, 'b': 0})
 
     return chart_left, chart_left_size_legend, dict_model_cluster
 

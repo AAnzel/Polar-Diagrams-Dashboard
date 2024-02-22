@@ -10,6 +10,8 @@ from dash.exceptions import PreventUpdate
 
 _INT_CHART_WIDTH = 1400
 _INT_CHART_HEIGHT = 500
+_INT_TICK_SIZE = 9
+_INT_TITLE_SIZE = 12
 _DICT_FIGURE_SAVE_CONFIG = {
     'format': 'png',  # one of png, svg, jpeg, webp
     'filename': 'polar_diagram',
@@ -78,10 +80,10 @@ def _chart_warning_create(df_input, string_reference_model,
         polar_angularaxis_ticktext=chart_result[
             'layout']['polar']['angularaxis']['ticktext'][::2],
         polar_sector=[0, 180 if string_mid_type == 'scaled' else 90],
-        polar_angularaxis_tickfont_size=8,
-        polar_radialaxis_tickfont_size=8,
-        polar_radialaxis_title_font_size=12,
-        title_font_size=12,
+        polar_angularaxis_tickfont_size=_INT_TICK_SIZE,
+        polar_radialaxis_tickfont_size=_INT_TICK_SIZE,
+        polar_radialaxis_title_font_size=_INT_TITLE_SIZE,
+        title_font_size=_INT_TITLE_SIZE,
         width=round(_INT_CHART_WIDTH / 2.6),
         height=_INT_CHART_HEIGHT - 120,
         margin={'l': 50, 'r': 50},
@@ -116,14 +118,14 @@ def _list_create_rows(df_input, string_reference_model,
         chart_result.add_annotation(
             dict(x=1, y=1.2, xref="paper", yref="paper", showarrow=False,
                  text=string_hyperparam_info,
-                 font=dict(size=8, color="black")))
+                 font=dict(size=_INT_TICK_SIZE, color="black")))
 
         if int_i == 3:
             chart_result.update_layout(
-                height=_INT_CHART_HEIGHT - 60,
+                height=_INT_CHART_HEIGHT - 50,
                 showlegend=True, legend_xref='paper',
                 legend_yref='paper', legend_xanchor='left',
-                legend_yanchor='bottom', legend_orientation='h', legend_y=-0.6)
+                legend_yanchor='bottom', legend_orientation='h', legend_y=-0.8)
 
         list_row.append(
             dbc.Col(
