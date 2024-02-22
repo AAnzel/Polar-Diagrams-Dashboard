@@ -192,9 +192,9 @@ def _chart_create_left_chart(df_grouped_data, string_reference_model,
         template='simple_white',
         dragmode=False,
         hovermode=False,
-        width=round(_INT_CHART_WIDTH/5),
+        width=round(_INT_CHART_WIDTH/3.6),
         height=110,
-        margin={'r': 50, 'l': 10, 't': 0, 'b': 0})
+        margin={'r': 50, 'l': 130, 't': 0, 'b': 0})
 
     return chart_left, chart_left_size_legend
 
@@ -480,8 +480,7 @@ layout = [
             html.H3("Detail"),
             style={"font-family": 'open sans',
                    'text-align': 'center', 'margin-bottom': 40,
-                   'margin-top': 80,  # 'padding-left': 100
-                   }),
+                   'margin-top': 80}),
         dcc.Graph(
             id="chart-right",
             figure=chart_right,
