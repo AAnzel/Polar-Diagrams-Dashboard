@@ -1,14 +1,11 @@
-# import os
-# import json
+import os
 import warnings
 import itertools
 import numpy as np
-# import pandas as pd
+import pandas as pd
 import polar_diagrams
-from sklearn.datasets import load_wine
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
-# from sklearn.model_selection import GridSearchCV
 
 from dash import dcc, html, Input, Output, callback, State, Patch
 import dash_bootstrap_components as dbc
@@ -27,6 +24,12 @@ _DICT_FIGURE_SAVE_CONFIG = {
     # 'width': 700,
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
+_DICT_MI_PARAMETERS = dict(
+    string_entropy_method='auto',
+    int_mi_n_neighbors=3,
+    bool_discrete_reference_model=True,
+    discrete_models=True,
+    int_random_state=42)
 _FLOAT_MAX_R = 0.0
 _FLOAT_MAX_THETA = 0.0
 _DICT_CLUSTER_MODEL = {}
@@ -44,7 +47,8 @@ def _grid_search(df_left_input, string_reference_model, list_measures):
         df_reference_row.index)[list_measures]
 
     list_min_samples = np.arange(2, 15, step=2)
-    list_epsilons = np.linspace(0.01, 5, num=50)
+    # TODO: Improve choosing epsilon depending on the data
+    list_epsilons = np.linspace(0.01, 10, num=50)
     list_hyperparam = list(itertools.product(list_epsilons, list_min_samples))
 
     list_scores = []
@@ -55,7 +59,6 @@ def _grid_search(df_left_input, string_reference_model, list_measures):
             eps=float_eps, min_samples=int_min_samples, n_jobs=-1)
         constructor_DBSCAN.fit_predict(df_input_no_reference)
         list_labels = constructor_DBSCAN.labels_
-
         # We check if we have all outliers or all elements in seperate clusters
         # These are the edge cases which we do not want
         if len(set(list_labels)) == 1 or (
@@ -227,7 +230,8 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
         string_angle_measure = 'Angle'
     else:
         df_left_input = polar_diagrams.df_calculate_mid_properties(
-            df_new_input, string_reference_model)
+            df_new_input, string_reference_model,
+            dict_mi_parameters=_DICT_MI_PARAMETERS)
         if string_mid_type == 'scaled':
             list_relevant_measures = ['Entropy', 'Scaled MI', 'VI']
             string_angle_measure = 'Angle_SMI'
@@ -279,7 +283,8 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
             warnings.simplefilter("default")
             chart_right = polar_diagrams.chart_create_mi_diagram(
                 df_input, string_reference_model=string_reference_model,
-                string_mid_type=string_mid_type).update_layout(
+                string_mid_type=string_mid_type,
+                dict_mi_parameters=_DICT_MI_PARAMETERS).update_layout(
                 dragmode='select', clickmode='event+select',
                 width=int(_INT_CHART_WIDTH*0.9),
                 height=_INT_CHART_HEIGHT*1.3,
@@ -418,13 +423,9 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
 
 
 # =============================================================================
-df_wine_data = load_wine(return_X_y=False, as_frame=True)['data']
-df_wine_data['od_diluted'] = df_wine_data['od280/od315_of_diluted_wines']
-df_wine_data.drop(['od280/od315_of_diluted_wines', 'proline'], axis=1,
-                  inplace=True)
-
-_DF_INPUT = df_wine_data
-_STRING_REFERENCE_MODEL = 'alcohol'
+_DF_INPUT = pd.read_csv(
+    os.path.join('..', 'Data', 'Case_Study_Ecoli', 'ecoli_evaluation.csv'))
+_STRING_REFERENCE_MODEL = 'Ground_Truth'
 _STRING_DIAGRAM_TYPE = 'taylor'
 _STRING_MID_TYPE = 'normalized'
 
