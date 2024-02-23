@@ -147,15 +147,19 @@ dash_app.validation_layout = dbc.Container(
 @callback(
     Output('row_main_content', 'children'),
     Output('main_title', 'children'),
+    Output('selected-diagram-type', 'value'),
     Input('radio_button', 'value')
 )
 def display_main_content(string_button_value):
     if string_button_value == 'bioinfo':
-        return overview_detail.layout, 'Case Study - Machine Learning (ML)'
+        return (overview_detail.layout, 'Case Study - Machine Learning (ML)',
+                'taylor')
     elif string_button_value == 'bioinfo-time':
-        return '404', 'Case Study - ML with Training Time'
+        return ('404', 'Case Study - ML with Training Time',
+                'taylor')
     elif string_button_value == 'gp':
-        return small_multiple.layout, 'Case Study - Gaussian Processes'
+        return (small_multiple.layout, 'Case Study - Gaussian Processes',
+                'taylor')
     else:
         return '404'
 
