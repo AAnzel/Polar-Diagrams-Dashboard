@@ -131,12 +131,17 @@ dash_app.validation_layout = dbc.Container(
     [
         layout_first_row,
         dbc.Row(
-            [overview_detail.layout],
+            [overview_detail._layout_return(False)],
             className="g-0",
             justify="center",
             id='row_main_content'),
         dbc.Row(
-            [small_multiple.layout],
+            [overview_detail._layout_return(True)],
+            className="g-0",
+            justify="center",
+            id='row_main_content'),
+        dbc.Row(
+            [small_multiple._layout_return()],
             className="g-0",
             justify="center",
             id='row_main_content'),
@@ -152,13 +157,15 @@ dash_app.validation_layout = dbc.Container(
 )
 def display_main_content(string_button_value):
     if string_button_value == 'bioinfo':
-        return (overview_detail.layout, 'Case Study - Machine Learning (ML)',
-                'taylor')
+        return (overview_detail._layout_return(False),
+                'Case Study - Machine Learning (ML)', 'taylor')
     elif string_button_value == 'bioinfo-time':
-        return ('404', 'Case Study - ML with Training Time',
+        return (overview_detail._layout_return(True),
+                'Case Study - ML with Training Time',
                 'taylor')
     elif string_button_value == 'gp':
-        return (small_multiple.layout, 'Case Study - Gaussian Processes',
+        return (small_multiple._layout_return(),
+                'Case Study - Gaussian Processes',
                 'taylor')
     else:
         return '404'

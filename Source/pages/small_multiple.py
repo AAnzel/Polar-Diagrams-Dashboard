@@ -1,6 +1,6 @@
 import os
-import warnings
 import pandas as pd
+import warnings
 import polar_diagrams
 
 from dash import dcc, html, Input, Output, callback, Patch, State
@@ -19,17 +19,11 @@ _DICT_FIGURE_SAVE_CONFIG = {
     # 'width': 700,
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
-
-path_root_data = os.path.join('..', 'Data')
-path_gp_data = os.path.join(path_root_data, 'Case_Study_Gaussian_Processes',
-                            'results_agent1')
-list_csv_files = os.listdir(path_gp_data)
-list_pretty_names = ['σ_F: ' + i.split('_')[0][-3:] + ', ' +
-                     'σ_L: ' + i.split('_')[1][-3:]
-                     for i in list_csv_files]
-list_df = [pd.read_csv(os.path.join(path_gp_data, i)) for i in list_csv_files]
-
-int_num_of_versions = len(list_df)
+_STRING_DIAGRAM_TYPE = 'taylor'
+_STRING_MID_TYPE = 'normalized'
+_DF_INPUT = None
+_STRING_REFERENCE_MODEL = 'True'
+_LIST_PRETTY_NAMES = None
 
 
 def _chart_warning_create(df_input, string_reference_model,
@@ -97,7 +91,7 @@ def _list_create_rows(df_input, string_reference_model,
     list_rows = []
     list_row = []
     list_tuple_pretty_names = list(
-        zip(list_pretty_names, list_pretty_names[1:]))
+        zip(_LIST_PRETTY_NAMES, _LIST_PRETTY_NAMES[1:]))
 
     for int_i, tuple_dfs in enumerate(list(zip(df_input, df_input[1:]))):
         if int_i % 3 == 0:
@@ -151,22 +145,28 @@ def _list_create_rows(df_input, string_reference_model,
     return list_rows
 
 
-# ============================================================================
-_STRING_DIAGRAM_TYPE = 'taylor'
-_STRING_MID_TYPE = 'normalized'
-_DF_INPUT = list_df
-_STRING_REFERENCE_MODEL = 'True'
+def _layout_return():
+    global _STRING_DIAGRAM_TYPE, _STRING_MID_TYPE, _DF_INPUT
+    global _STRING_REFERENCE_MODEL, _LIST_PRETTY_NAMES
 
-list_rows = _list_create_rows(_DF_INPUT, _STRING_REFERENCE_MODEL,
-                              _STRING_DIAGRAM_TYPE, _STRING_MID_TYPE)
-# ============================================================================
+    path_gp_data = os.path.join(
+        '..', 'Data', 'Case_Study_Gaussian_Processes', 'results_agent1')
+    list_csv_files = os.listdir(path_gp_data)
+    _DF_INPUT = [pd.read_csv(
+        os.path.join(path_gp_data, i)) for i in list_csv_files]
+    _LIST_PRETTY_NAMES = [
+        'σ_F: ' + i.split('_')[0][-3:] + ', ' +
+        'σ_L: ' + i.split('_')[1][-3:] for i in list_csv_files]
 
+    list_rows = _list_create_rows(_DF_INPUT, _STRING_REFERENCE_MODEL,
+                                  _STRING_DIAGRAM_TYPE, _STRING_MID_TYPE)
 
-layout = dbc.Container(
-    list_rows,
-    id='small_multiple_rows',
-    fluid=True
-)
+    layout = dbc.Container(
+        list_rows,
+        id='small_multiple_rows',
+        fluid=True)
+
+    return layout
 
 
 @callback(

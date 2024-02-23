@@ -1,8 +1,8 @@
 import os
+import pandas as pd
 import warnings
 import itertools
 import numpy as np
-import pandas as pd
 import polar_diagrams
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score
@@ -34,6 +34,9 @@ _FLOAT_MAX_R = 0.0
 _FLOAT_MAX_THETA = 0.0
 _DICT_CLUSTER_MODEL = {}
 _LIST_MODEL_NAMES = []
+_STRING_REFERENCE_MODEL = 'Ground_Truth'
+_STRING_DIAGRAM_TYPE = 'taylor'
+_STRING_MID_TYPE = 'normalized'
 
 
 def _grid_search(df_left_input, string_reference_model, list_measures):
@@ -310,7 +313,7 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
     if string_diagram_type == 'mid' and string_mid_type == 'scaled':
         chart_right.update_layout(polar_sector=[0, 180])
     # ====================================================================
-    
+
     return chart_right, list_warnings
 
 
@@ -431,79 +434,87 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
     return chart_left, chart_left_size_legend, chart_right, list_warnings
 
 
-# =============================================================================
-_DF_INPUT = pd.read_csv(
-    os.path.join('..', 'Data', 'Case_Study_Ecoli', 'ecoli_evaluation.csv'))
-_STRING_REFERENCE_MODEL = 'Ground_Truth'
-_STRING_DIAGRAM_TYPE = 'taylor'
-_STRING_MID_TYPE = 'normalized'
+def _layout_return(bool_with_scalar):
+    global _DF_INPUT
+    if bool_with_scalar:
+        _DF_INPUT = [
+            pd.read_csv(os.path.join('..', 'Data', 'Case_Study_Ecoli',
+                                     'ecoli_evaluation.csv')),
+            pd.read_csv(os.path.join('..', 'Data', 'Case_Study_Ecoli',
+                                     'ecoli_time_evaluation.csv'))
+            ]
+    else:
+        _DF_INPUT = pd.read_csv(
+            os.path.join('..', 'Data', 'Case_Study_Ecoli',
+                         'ecoli_evaluation.csv'))
 
-(chart_left, chart_left_size_legend, chart_right,
- list_warnings) = _tuple_create_both_diagrams(
-     _DF_INPUT, _STRING_REFERENCE_MODEL, _STRING_DIAGRAM_TYPE,
-     _STRING_MID_TYPE)
-# =============================================================================
+    (chart_left, chart_left_size_legend, chart_right,
+     list_warnings) = _tuple_create_both_diagrams(
+         _DF_INPUT, _STRING_REFERENCE_MODEL, _STRING_DIAGRAM_TYPE,
+         _STRING_MID_TYPE)
 
-layout = [
-    dbc.Col([
-        html.Div(
-            html.H3("Overview"),
-            style={"font-family": 'open sans',
-                   'text-align': 'center', 'margin-bottom': 40,
-                   'margin-top': 80}),
-        dcc.Graph(
-            id="chart-left",
-            figure=chart_left,
-            config={
-                'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
-                'modeBarButtonsToRemove': [
-                    'zoom', 'select', 'pan', 'lasso', 'zoomIn',
-                    'zoomOut', 'autoScale', 'resetScale'],
-                'staticPlot': False,
-                'displaylogo': False,
-                'showAxisDragHandles': False}
-        ),
-        dcc.Graph(
-            id="chart-left-legend",
-            figure=chart_left_size_legend,
-            config={
-                'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
-                'modeBarButtonsToRemove': [
-                    'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
-                    'autoScale', 'resetScale'],
-                'displaylogo': False,
-                'showAxisDragHandles': False},
-            style={'margin-bottom': 0, 'margin-top': 0}),
-        html.Div(
-            dbc.Alert(
-                list_warnings,
-                color="warning",
-                id='alert-warnings',
-                is_open=True if list_warnings else False,
-                className="d-flex align-items-left",
-                style={'margin-top': 30}))],
-        width=3,
-        align='start',
-        style={'margin-left': 0, 'margin-right': 0}),
-    dbc.Col([
-        html.Div(
-            html.H3("Detail"),
-            style={"font-family": 'open sans',
-                   'text-align': 'center', 'margin-bottom': 40,
-                   'margin-top': 80}),
-        dcc.Graph(
-            id="chart-right",
-            figure=chart_right,
-            config={
-                'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
-                'modeBarButtonsToRemove': [
-                    'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
-                    'autoScale', 'resetScale'],
-                'displaylogo': False,
-                'showAxisDragHandles': False})],
-            width=True,
-            align='start')
-    ]
+    layout = [
+        dbc.Col([
+            html.Div(
+                html.H3("Overview"),
+                style={"font-family": 'open sans',
+                       'text-align': 'center', 'margin-bottom': 40,
+                       'margin-top': 80}),
+            dcc.Graph(
+                id="chart-left",
+                figure=chart_left,
+                config={
+                    'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
+                    'modeBarButtonsToRemove': [
+                        'zoom', 'select', 'pan', 'lasso', 'zoomIn',
+                        'zoomOut', 'autoScale', 'resetScale'],
+                    'staticPlot': False,
+                    'displaylogo': False,
+                    'showAxisDragHandles': False}
+            ),
+            dcc.Graph(
+                id="chart-left-legend",
+                figure=chart_left_size_legend,
+                config={
+                    'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
+                    'modeBarButtonsToRemove': [
+                        'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
+                        'autoScale', 'resetScale'],
+                    'displaylogo': False,
+                    'showAxisDragHandles': False},
+                style={'margin-bottom': 0, 'margin-top': 0}),
+            html.Div(
+                dbc.Alert(
+                    list_warnings,
+                    color="warning",
+                    id='alert-warnings',
+                    is_open=True if list_warnings else False,
+                    className="d-flex align-items-left",
+                    style={'margin-top': 30}))],
+            width=3,
+            align='start',
+            style={'margin-left': 0, 'margin-right': 0}),
+        dbc.Col([
+            html.Div(
+                html.H3("Detail"),
+                style={"font-family": 'open sans',
+                       'text-align': 'center', 'margin-bottom': 40,
+                       'margin-top': 80}),
+            dcc.Graph(
+                id="chart-right",
+                figure=chart_right,
+                config={
+                    'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
+                    'modeBarButtonsToRemove': [
+                        'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
+                        'autoScale', 'resetScale'],
+                    'displaylogo': False,
+                    'showAxisDragHandles': False})],
+                width=True,
+                align='start')
+        ]
+
+    return layout
 
 
 @callback(
