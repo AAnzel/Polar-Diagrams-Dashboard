@@ -227,21 +227,14 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
         df_left_input = polar_diagrams.df_calculate_td_properties(
             df_new_input, string_reference_model)
         list_relevant_measures = ['Standard Deviation', 'Correlation', 'CRMSE']
-        string_angle_measure = 'Angle'
     else:
         df_left_input = polar_diagrams.df_calculate_mid_properties(
             df_new_input, string_reference_model,
             dict_mi_parameters=_DICT_MI_PARAMETERS)
         if string_mid_type == 'scaled':
             list_relevant_measures = ['Entropy', 'Scaled MI', 'VI']
-            string_angle_measure = 'Angle_SMI'
         else:
-            string_angle_measure = 'Angle_NMI'
             list_relevant_measures = ['Root Entropy', 'Normalized MI', 'RVI']
-
-    global _FLOAT_MAX_THETA
-    _FLOAT_MAX_THETA = 90.0 if df_left_input[
-        string_angle_measure].max() < 90 else 180.0
 
     tuple_hyperparam, np_array_labels = _grid_search(
         df_left_input,
@@ -255,16 +248,6 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
     chart_left, chart_left_size_legend = _chart_create_left_chart(
         df_left_grouped, string_reference_model, string_diagram_type,
         string_mid_type, list_relevant_measures[-1])
-
-    float_width_division = 3.2 if _FLOAT_MAX_THETA == 180.0 else 3.6
-    float_height_subtraction = 230 if _FLOAT_MAX_THETA == 180.0 else 240
-    dict_margin = {'l': 0, 'r': 0, 't': 0,
-                   'b': 0} if _FLOAT_MAX_THETA == 180.0 else {'t': 10, 'b': 20,
-                                                              'r': 0}
-    chart_left.update_layout(
-        width=round(_INT_CHART_WIDTH / float_width_division),
-        height=_INT_CHART_HEIGHT - float_height_subtraction,
-        margin=dict_margin)
 
     return chart_left, chart_left_size_legend, dict_model_cluster
 
@@ -321,6 +304,13 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
                     html.Br()]
                 int_i += 1
 
+    # ====================================================================
+    # This is done only for the sake of showing at least one diagram with
+    # both quadrants
+    if string_diagram_type == 'mid' and string_mid_type == 'scaled':
+        chart_right.update_layout(polar_sector=[0, 180])
+    # ====================================================================
+    
     return chart_right, list_warnings
 
 
@@ -330,6 +320,9 @@ def _tuple_style_both_diagrams(chart_left, chart_right, dict_model_cluster):
     # left overview diagram. This diagram can have for example the angular axis
     # 0-90 and not 0-180 as the right diagram because of the aggregation of
     # some models during clustering (thus aggregating their coordinates)
+    global _FLOAT_MAX_THETA
+    _FLOAT_MAX_THETA = chart_right['layout']['polar']['sector'][1]
+
     chart_left.update_layout(
         title=None,
         polar_radialaxis_range=chart_right[
@@ -347,9 +340,7 @@ def _tuple_style_both_diagrams(chart_left, chart_right, dict_model_cluster):
         polar_angularaxis_showticklabels=False,
         polar_angularaxis_linewidth=0.5,
         polar_angularaxis_showgrid=False,
-        polar_sector=[
-            0, chart_right['layout']['polar']["angularaxis"]['tickvals'][0]],
-    )
+        polar_sector=[0, _FLOAT_MAX_THETA])
 
     # We disable a legend for the second diagram by traversing traces
     dict_right = chart_right.to_dict()
@@ -372,6 +363,16 @@ def _tuple_style_both_diagrams(chart_left, chart_right, dict_model_cluster):
                               legend_yanchor='top',
                               legend_orientation='v',
                               legend_y=0.9)
+
+    float_width_division = 3.2 if _FLOAT_MAX_THETA == 180.0 else 3.6
+    float_height_subtraction = 230 if _FLOAT_MAX_THETA == 180.0 else 240
+    dict_margin = {'l': 0, 'r': 0, 't': 0,
+                   'b': 0} if _FLOAT_MAX_THETA == 180.0 else {'t': 10, 'b': 20,
+                                                              'r': 0}
+    chart_left.update_layout(
+        width=round(_INT_CHART_WIDTH / float_width_division),
+        height=_INT_CHART_HEIGHT - float_height_subtraction,
+        margin=dict_margin)
 
     return chart_left, chart_right
 
@@ -418,6 +419,14 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
 
     _LIST_MODEL_NAMES = [dict_one_trace['name'].split('. ')[1]
                          for dict_one_trace in chart_right['data']]
+
+    # ====================================================================
+    # This is done only for the sake of showing at least one diagram with
+    # both quadrants
+    if string_diagram_type == 'mid' and string_mid_type == 'scaled':
+        chart_left.update_layout(polar_sector=[0, 180])
+        chart_right.update_layout(polar_sector=[0, 180])
+    # ====================================================================
 
     return chart_left, chart_left_size_legend, chart_right, list_warnings
 
