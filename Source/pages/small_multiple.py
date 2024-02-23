@@ -155,8 +155,8 @@ def _layout_return():
     _DF_INPUT = [pd.read_csv(
         os.path.join(path_gp_data, i)) for i in list_csv_files]
     _LIST_PRETTY_NAMES = [
-        'σ_F: ' + i.split('_')[0][-3:] + ', ' +
-        'σ_L: ' + i.split('_')[1][-3:] for i in list_csv_files]
+        'σ_F: <b>' + i.split('_')[0][-3:] + '</b>, ' +
+        'σ_L: <b>' + i.split('_')[1][-3:] + '</b>' for i in list_csv_files]
 
     list_rows = _list_create_rows(_DF_INPUT, _STRING_REFERENCE_MODEL,
                                   _STRING_DIAGRAM_TYPE, _STRING_MID_TYPE)
