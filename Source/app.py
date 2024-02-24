@@ -24,9 +24,21 @@ layout_first_row = dbc.Row([
                 html.H4('Case Studies'),
                 dcc.RadioItems(
                     options=[
-                        {'label': html.Span('1. Overview+Detail - Machine Learning (ML)', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo'},  # noqa
-                        {'label': html.Span('2. Overview+Detail - ML with Training Time', style={'font-size': 20, 'padding-left': 12}), 'value': 'bioinfo-time'},  # noqa
-                        {'label': html.Span('3. Small Multiple - Gaussian Processes', style={'font-size': 20, 'padding-left': 12}), 'value': 'gp'},  # noqa
+                        {'label': html.Span(
+                            '1. Overview+Detail - Machine Learning (ML)',
+                            style={'font-size': 20, 'padding-left': 12}),
+                         'value': 'bioinfo'
+                         },
+                        {'label': html.Span(
+                            '2. Overview+Detail - ML with Training Time',
+                            style={'font-size': 20, 'padding-left': 12}),
+                         'value': 'bioinfo-time'
+                         },
+                        {'label': html.Span(
+                            '3. Small Multiple - Gaussian Processes',
+                            style={'font-size': 20, 'padding-left': 12}),
+                         'value': 'gp'
+                         },
                         ],
                     value='bioinfo',
                     labelStyle={"display": "flex",
@@ -179,9 +191,6 @@ def display_main_content(string_button_value):
     prevent_initial_call=True
 )
 def _toggle_offcanvas(button_clicked, radio_clicked, is_open):
-    # TODO: I should also add here that any radiobutton click in the canvas
-    # TODO: renders the new example
-
     if button_clicked or radio_clicked:
         return not is_open
     return is_open
