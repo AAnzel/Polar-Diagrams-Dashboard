@@ -3,7 +3,6 @@ import dash_bootstrap_components as dbc
 
 from pages import overview_detail, small_multiple
 
-# TODO: Cache all figures and visualize cached values
 
 dash_app = Dash("Polar Diagrams Dashboard",
                 external_stylesheets=[dbc.themes.BOOTSTRAP,

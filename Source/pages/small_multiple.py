@@ -24,6 +24,7 @@ _STRING_MID_TYPE = 'normalized'
 _DF_INPUT = None
 _STRING_REFERENCE_MODEL = 'True'
 _LIST_PRETTY_NAMES = None
+_DICT_CACHED_CHARTS = {'taylor': [], 'mid': {'scaled': [], 'normalized': []}}
 
 
 def _chart_warning_create(df_input, string_reference_model,
@@ -88,6 +89,19 @@ def _chart_warning_create(df_input, string_reference_model,
 
 def _list_create_rows(df_input, string_reference_model,
                       string_diagram_type='taylor', string_mid_type='scaled'):
+    # We first check if we cached the diagrams
+    global _DICT_CACHED_CHARTS
+    bool_charts_are_cached = False
+
+    if string_diagram_type == 'taylor':
+        if _DICT_CACHED_CHARTS[string_diagram_type]:
+            bool_charts_are_cached = True
+            return _DICT_CACHED_CHARTS[string_diagram_type]
+    else:
+        if _DICT_CACHED_CHARTS[string_diagram_type][string_mid_type]:
+            bool_charts_are_cached = True
+            return _DICT_CACHED_CHARTS[string_diagram_type][string_mid_type]
+
     list_rows = []
     list_row = []
     list_tuple_pretty_names = list(
@@ -141,6 +155,14 @@ def _list_create_rows(df_input, string_reference_model,
                 align='start',
                 style={'margin-left': 0, 'margin-right': 0})
         )
+
+    # We cache the values if we have not already
+    if not bool_charts_are_cached:
+        if string_diagram_type == 'taylor':
+            _DICT_CACHED_CHARTS[string_diagram_type] = list_rows
+        else:
+            _DICT_CACHED_CHARTS[string_diagram_type][
+                string_mid_type] = list_rows
 
     return list_rows
 
