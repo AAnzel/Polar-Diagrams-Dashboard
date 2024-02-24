@@ -12,6 +12,7 @@ dash_app = Dash("Polar Diagrams Dashboard",
 dash_app.title = "Polar Diagrams Dashboard"
 # dash_app.css.config.serve_locally = True
 dash_app.scripts.config.serve_locally = True
+server = dash_app.server
 
 layout_first_row = dbc.Row([
     dbc.Col([
