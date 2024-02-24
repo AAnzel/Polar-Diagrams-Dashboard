@@ -45,7 +45,6 @@ _DICT_CACHED_CHARTS = {
 def _grid_search(df_left_input, string_reference_model, list_measures):
 
     # We save the row with the reference model
-    # TODO: Implement check for duplicate reference models in the library
     df_reference_row = df_left_input.loc[
         df_left_input['Model'] == string_reference_model]
     # We remove the reference row from the dataframe
