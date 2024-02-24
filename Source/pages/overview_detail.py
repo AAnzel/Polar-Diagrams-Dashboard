@@ -37,9 +37,6 @@ _LIST_MODEL_NAMES = []
 _STRING_REFERENCE_MODEL = 'Ground_Truth'
 _STRING_DIAGRAM_TYPE = 'taylor'
 _STRING_MID_TYPE = 'normalized'
-_DICT_CACHED_CHARTS = {
-    'normal': {'taylor': (), 'mid': {'scaled': (), 'normalized': ()}},
-    'scalar': {'taylor': (), 'mid': {'scaled': (), 'normalized': ()}}}
 
 
 def _grid_search(df_left_input, string_reference_model, list_measures):
@@ -386,24 +383,6 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
                                 string_diagram_type='taylor',
                                 string_mid_type='normalized'):
 
-    # We first check if we cached the diagrams
-    global _DICT_CACHED_CHARTS
-    bool_charts_are_cached = False
-    string_case_study_type = 'scalar' if isinstance(
-        df_input, list) else 'normal'
-
-    if string_diagram_type == 'taylor':
-        if _DICT_CACHED_CHARTS[string_case_study_type][string_diagram_type]:
-            bool_charts_are_cached = True
-            return _DICT_CACHED_CHARTS[string_case_study_type][
-                string_diagram_type]
-    else:
-        if _DICT_CACHED_CHARTS[string_case_study_type][string_diagram_type][
-                string_mid_type]:
-            bool_charts_are_cached = True
-            return _DICT_CACHED_CHARTS[string_case_study_type][
-                string_diagram_type][string_mid_type]
-
     list_valid_diagram_types = ['taylor', 'mid']
     list_valid_mid_types = ['scaled', 'normalized']
 
@@ -450,17 +429,6 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
         chart_left.update_layout(polar_sector=[0, 180])
         chart_right.update_layout(polar_sector=[0, 180])
     # ====================================================================
-
-    # We cache the values if we have not already
-    if not bool_charts_are_cached:
-        if string_diagram_type == 'taylor':
-            _DICT_CACHED_CHARTS[string_case_study_type][
-                string_diagram_type] = (chart_left, chart_left_size_legend,
-                                        chart_right, list_warnings)
-        else:
-            _DICT_CACHED_CHARTS[string_case_study_type][string_diagram_type][
-                string_mid_type] = (chart_left, chart_left_size_legend,
-                                    chart_right, list_warnings)
 
     return chart_left, chart_left_size_legend, chart_right, list_warnings
 
