@@ -151,7 +151,7 @@ def _layout_return():
     global _STRING_REFERENCE_MODEL, _LIST_PRETTY_NAMES
 
     path_gp_data = os.path.join(
-        '..', 'Data', 'Case_Study_Gaussian_Processes', 'results_agent1')
+        '..', 'data', 'Case_Study_Gaussian_Processes', 'results_agent1')
     list_csv_files = os.listdir(path_gp_data)
     _DF_INPUT = [pd.read_csv(
         os.path.join(path_gp_data, i)) for i in list_csv_files]

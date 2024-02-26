@@ -437,14 +437,14 @@ def _layout_return(bool_with_scalar):
     global _DF_INPUT
     if bool_with_scalar:
         _DF_INPUT = [
-            pd.read_csv(os.path.join('..', 'Data', 'Case_Study_Ecoli',
+            pd.read_csv(os.path.join('..', 'data', 'Case_Study_Ecoli',
                                      'ecoli_evaluation.csv')),
-            pd.read_csv(os.path.join('..', 'Data', 'Case_Study_Ecoli',
+            pd.read_csv(os.path.join('..', 'data', 'Case_Study_Ecoli',
                                      'ecoli_time_evaluation.csv'))
             ]
     else:
         _DF_INPUT = pd.read_csv(
-            os.path.join('..', 'Data', 'Case_Study_Ecoli',
+            os.path.join('..', 'data', 'Case_Study_Ecoli',
                          'ecoli_evaluation.csv'))
 
     (chart_left, chart_left_size_legend, chart_right,
