@@ -20,8 +20,6 @@ _STR_COLOR_BACKGROUND_GREY = '#FBFBFB'
 _DICT_FIGURE_SAVE_CONFIG = {
     'format': 'png',  # one of png, svg, jpeg, webp
     'filename': 'polar_diagram',
-    # 'height': 500,
-    # 'width': 700,
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
 _DICT_MI_PARAMETERS = dict(
@@ -306,13 +304,6 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
                     html.Br()]
                 int_i += 1
 
-    # ====================================================================
-    # This is done only for the sake of showing at least one diagram with
-    # both quadrants
-    if string_diagram_type == 'mid' and string_mid_type == 'scaled':
-        chart_right.update_layout(polar_sector=[0, 180])
-    # ====================================================================
-
     return chart_right, list_warnings
 
 
@@ -406,7 +397,6 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
         chart_left, chart_right, dict_model_cluster)
 
     global _FLOAT_MAX_R
-    global _FLOAT_MAX_THETA
     global _DICT_CLUSTER_MODEL
     global _LIST_MODEL_NAMES
     _FLOAT_MAX_R = chart_left['layout']['polar']['radialaxis']['range'][1]
@@ -422,30 +412,36 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
     _LIST_MODEL_NAMES = [dict_one_trace['name'].split('. ')[1]
                          for dict_one_trace in chart_right['data']]
 
-    # ====================================================================
-    # This is done only for the sake of showing at least one diagram with
-    # both quadrants
-    if string_diagram_type == 'mid' and string_mid_type == 'scaled':
-        chart_left.update_layout(polar_sector=[0, 180])
-        chart_right.update_layout(polar_sector=[0, 180])
-    # ====================================================================
-
     return chart_left, chart_left_size_legend, chart_right, list_warnings
 
 
-def _layout_return(bool_with_scalar):
-    global _DF_INPUT
-    if bool_with_scalar:
+def _layout_return(bool_ml):
+    global _DF_INPUT, _STRING_REFERENCE_MODEL, _DICT_MI_PARAMETERS
+    if bool_ml:
         _DF_INPUT = [
             pd.read_csv(os.path.join('..', 'data', 'Case_Study_Ecoli',
                                      'ecoli_evaluation.csv')),
             pd.read_csv(os.path.join('..', 'data', 'Case_Study_Ecoli',
-                                     'ecoli_time_evaluation.csv'))
-            ]
+                                     'ecoli_time_evaluation.csv'))]
+        _STRING_REFERENCE_MODEL = 'Ground_Truth'
+        _DICT_MI_PARAMETERS = dict(
+            string_entropy_method='auto',
+            int_mi_n_neighbors=3,
+            bool_discrete_reference_model=True,
+            discrete_models=True,
+            int_random_state=42)
+
     else:
         _DF_INPUT = pd.read_csv(
-            os.path.join('..', 'data', 'Case_Study_Ecoli',
-                         'ecoli_evaluation.csv'))
+            os.path.join('..', 'data', 'Case_Study_Climate',
+                         'climate_models_temp.csv'))
+        _STRING_REFERENCE_MODEL = 'Observation'
+        _DICT_MI_PARAMETERS = dict(
+            string_entropy_method='auto',
+            int_mi_n_neighbors=3,
+            bool_discrete_reference_model=False,
+            discrete_models=False,
+            int_random_state=42)
 
     (chart_left, chart_left_size_legend, chart_right,
      list_warnings) = _tuple_create_both_diagrams(

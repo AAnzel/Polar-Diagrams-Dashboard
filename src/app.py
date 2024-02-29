@@ -25,14 +25,14 @@ layout_first_row = dbc.Row([
                 dcc.RadioItems(
                     options=[
                         {'label': html.Span(
-                            '1. Overview+Detail - Machine Learning (ML)',
+                            '1. Overview+Detail - Climate',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'bioinfo'
+                         'value': 'climate'
                          },
                         {'label': html.Span(
                             '2. Overview+Detail - ML with Training Time',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'bioinfo-time'
+                         'value': 'ml'
                          },
                         {'label': html.Span(
                             '3. Small Multiple - Gaussian Processes',
@@ -40,14 +40,25 @@ layout_first_row = dbc.Row([
                          'value': 'gp'
                          },
                         ],
-                    value='bioinfo',
+                    value='climate',
                     labelStyle={"display": "flex",
                                 "align-items": "center"},
                     id='radio_button',
-                    style={'margin-bottom': 80},
+                    style={'margin-bottom': 40},
                     ),
-                html.H4('Source Code and Data'),
-                html.H6('Polar Diagram Library'),
+                dbc.Row([
+                    dbc.Col(html.H4('Source Code and Data'), width=8),
+                    dbc.Col(
+                        html.A(
+                            html.I(className="fa-brands fa-github fa-4x",
+                                   style={'margin-top': 0}),
+                            href='https://github.com/AAnzel/Polar-Diagrams-Dashboard', # noqa
+                            target='_blank',
+                            className="d-flex justify-content-center",
+                            style={'color': 'inherit'}), width=4)],
+                        className="g-0", align="center",
+                        style={'margin-bottom': 10}),
+                html.H6('Polar Diagrams Library'),
                 html.P(['Anžel, A., Heider, D., & Hattab, G. (2023). ' +
                         'Interactive polar diagrams for model comparison.' +
                         ' In Computer Methods and Programs in Biomedicine ' +
@@ -58,7 +69,65 @@ layout_first_row = dbc.Row([
                             target='_blank', style={'color': 'inherit'})],
                        style={'font-size': 12, 'color': 'dimgray'}),
                 html.H5('Data Sets'),
-                html.H6('1. & 2. Overview+Detail'),
+                html.H6('1. Overview+Detail - Climate'),
+                html.P(['• WCRP Coupled Model Intercomparison Project – ' +
+                        'Phase 5: Special Issue of the ',
+                        html.A(
+                            'CLIVAR Exchanges Newsletter, No. 56, Vol. 15, No. 2', # noqa
+                            href='http://www.clivar.org/publications/exchanges/Exchanges_56.pdf?id=45', # noqa
+                            target='_blank', style={'color': 'inherit'}),
+                        html.Br(),
+                        '• Taylor, K.E., R.J. Stouffer, G.A. Meehl: An ' +
+                        'Overview of CMIP5 and the experiment design.” Bull.' +
+                        ' Amer. Meteor. Soc., 93, 485-498, 2012 ',
+                        html.A(
+                            'doi:10.1175/BAMS-D-11-00094.1',
+                            href='http://dx.doi.org/10.1175/BAMS-D-11-00094.1',
+                            target='_blank', style={'color': 'inherit'}),
+                        html.Br(),
+                        '• Meehl, Gerald A., and Coauthors: Decadal ' +
+                        'Prediction. Bull. Amer. Meteor. Soc., 90, ' +
+                        '1467–1485, 2009 ',
+                        html.A(
+                            'doi:10.1175/2009BAMS2778.1',
+                            href='http://dx.doi.org/10.1175/2009BAMS2778.1',
+                            target='_blank', style={'color': 'inherit'}),
+                        html.Br(),
+                        '• Meehl, G.A., and K.A. Hibbard, 2007: ',
+                        html.A(
+                            'A strategy for climate change stabilization ' +
+                            'experiments with AOGCMs and ESMs.',
+                            href='http://www.clivar.org/organization/wgcm/wgcm-10/Aspen_WhitePaper_1final.pdf?id=42', # noqa
+                            target='_blank', style={'color': 'inherit'}),
+                        ' WCRP Informal ' +
+                        'Report No. 3/2007, ICPO Publication No. 112, IGBP ' +
+                        'Report No. 57, World Climate Research Programme: ' +
+                        'Geneva, 35 pp.',
+                        html.Br(),
+                        '• Hibbard, K. A., G. A. Meehl, P. Cox, and P. ' +
+                        'Friedlingstein (2007): A strategy for climate ' +
+                        'change stabilization experiments. EOS, 88, 217, ',
+                        html.A(
+                            'doi:10.1029/2007EO200002',
+                            href='http://dx.doi.org/10.1029/2007EO200002',
+                            target='_blank', style={'color': 'inherit'}),
+                        html.Br(),
+                        '• Waliser, D., Gleckler, P. J., Ferraro, R., Taylor' +
+                        ', K. E., Ames, S., Biard, J., Bosilovich, M. G., ' +
+                        'Brown, O., Chepfer, H., Cinquini, L., Durack, P. ' +
+                        'J., Eyring, V., Mathieu, P.-P., Lee, T., Pinnock, ' +
+                        'S., Potter, G. L., Rixen, M., Saunders, R., Schulz,' +
+                        ' J., Thépaut, J.-N., and Tuma, M (2020): ' +
+                        'Observations for Model Intercomparison Project ' +
+                        '(Obs4MIPs): status for CMIP6, Geosci. Model Dev., ' +
+                        '13, 2945–2958, ',
+                        html.A(
+                            'https://doi.org/10.5194/gmd-13-2945-2020',
+                            href='https://doi.org/10.5194/gmd-13-2945-2020',
+                            target='_blank', style={'color': 'inherit'}),
+                        ],
+                       style={'font-size': 12, 'color': 'dimgray'}),
+                html.H6('2. Overview+Detail - ML with Training Time'),
                 html.P(['Horton, P., & Nakai, K. (1996, June). A ' +
                         'probabilistic classification system for predicting ' +
                         'the cellular localization sites of proteins. In ' +
@@ -68,7 +137,7 @@ layout_first_row = dbc.Row([
                             href='https://dl.acm.org/doi/10.5555/645631.662879', # noqa
                             target='_blank', style={'color': 'inherit'})],
                        style={'font-size': 12, 'color': 'dimgray'}),
-                html.H6('3. Small Multiple'),
+                html.H6('3. Small Multiple - Gaussian Processes'),
                 html.P(['Yang, Z., Dai, X., Dubey, A., Hirche, S., & Hattab,' +
                         'G. (2024). Whom to Trust? Elective Learning for ' +
                         'Distributed Gaussian Process Regression (Version ' +
@@ -77,23 +146,17 @@ layout_first_row = dbc.Row([
                             'https://doi.org/10.48550/ARXIV.2402.03014',
                             href='https://doi.org/10.48550/ARXIV.2402.03014',
                             target='_blank', style={'color': 'inherit'})],
-                       style={'font-size': 12, 'color': 'dimgray'}),
-                html.A(
-                    html.I(className="fa-brands fa-github fa-5x",
-                           style={'margin-top': 40}),
-                    href='https://github.com/AAnzel/Polar-Diagrams-Dashboard',
-                    target='_blank',
-                    className="d-flex justify-content-center",
-                    style={'color': 'inherit'})
+                       style={'font-size': 12, 'color': 'dimgray'})
                 ],
             id="offcanvas",
             title=html.H2("Polar Diagrams Dashboard",
-                          style={'margin-bottom': 40}),
+                          style={'margin-bottom': 0}),
             is_open=False,
             style={'width': '25%', 'height': '100%'})],
             width=1,
             align='center',
-            style={'margin-left': 0, 'margin-right': 0}),
+            style={'margin-left': 0, 'margin-right': 0,
+                   'overflow': 'scroll'}),
     dbc.Col(
         html.Div(
             html.H1("Case Study", id='main_title'),
@@ -168,17 +231,15 @@ dash_app.validation_layout = dbc.Container(
     Input('radio_button', 'value')
 )
 def display_main_content(string_button_value):
-    if string_button_value == 'bioinfo':
+    if string_button_value == 'climate':
         return (overview_detail._layout_return(False),
-                'Case Study - Machine Learning (ML)', 'taylor')
-    elif string_button_value == 'bioinfo-time':
+                'Case Study - Climate', 'taylor')
+    elif string_button_value == 'ml':
         return (overview_detail._layout_return(True),
-                'Case Study - ML with Training Time',
-                'taylor')
+                'Case Study - ML with Training Time', 'taylor')
     elif string_button_value == 'gp':
         return (small_multiple._layout_return(),
-                'Case Study - Gaussian Processes',
-                'taylor')
+                'Case Study - Gaussian Processes', 'taylor')
     else:
         return '404'
 

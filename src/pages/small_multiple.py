@@ -15,8 +15,6 @@ _INT_TITLE_SIZE = 12
 _DICT_FIGURE_SAVE_CONFIG = {
     'format': 'png',  # one of png, svg, jpeg, webp
     'filename': 'polar_diagram',
-    # 'height': 500,
-    # 'width': 700,
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
 _STRING_DIAGRAM_TYPE = 'taylor'
