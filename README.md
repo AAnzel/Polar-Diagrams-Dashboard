@@ -80,7 +80,7 @@ The user should then open the link shown in the terminal or open the browser and
 
 ### Online
 
-The dashboard is also available online at: [https://polar-diagrams-dashboard.onrender.com/](https://polar-diagrams-dashboard.onrender.com/). The online version might be not be as responsive which is why we recommend running the dashboard locally using the previously mentioned method.
+The dashboard is also available online at: [https://polar-diagrams-dashboard.onrender.com/](https://polar-diagrams-dashboard.onrender.com/). The online version might not be as responsive which is why we recommend running the dashboard locally using the previously mentioned method.
 
 ## License
 
