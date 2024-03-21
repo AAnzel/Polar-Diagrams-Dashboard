@@ -18,7 +18,7 @@ _INT_CHART_HEIGHT = 500
 _STR_COLOR_SELECTION_GREY = '#D3D3D3'
 _STR_COLOR_BACKGROUND_GREY = '#FBFBFB'
 _DICT_FIGURE_SAVE_CONFIG = {
-    'format': 'png',  # one of png, svg, jpeg, webp
+    'format': 'svg',  # one of png, svg, jpeg, webp
     'filename': 'polar_diagram',
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }

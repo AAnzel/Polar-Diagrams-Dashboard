@@ -13,7 +13,7 @@ _INT_CHART_HEIGHT = 500
 _INT_TICK_SIZE = 9
 _INT_TITLE_SIZE = 12
 _DICT_FIGURE_SAVE_CONFIG = {
-    'format': 'png',  # one of png, svg, jpeg, webp
+    'format': 'svg',  # one of png, svg, jpeg, webp
     'filename': 'polar_diagram',
     'scale': 6  # Multiply title/legend/axis/canvas sizes by this factor
 }
