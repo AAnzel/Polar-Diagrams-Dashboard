@@ -3,7 +3,7 @@
 
 This library is created for the following paper:
 
-***"A Multi-Technique Strategy for Enhancing Polar Diagrams"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
+***"Placeholder"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
 
 Please cite the paper as:
 ```latex
@@ -13,8 +13,7 @@ Placeholder
 ---
 Abstract:
 
-> The polar coordinate system, though less prevalent than the Cartesian system for data visualization, plays a crucial role in the clarity of plots, especially in polar scatter charts like the Taylor or Mutual Information diagrams. These charts are vital for visualizing data with statistical, information-theoretic properties, or dynamic elements such as time or hyper-parameters. However, they often suffer from overplotting, which obscures readability. Traditional solutions effective in Cartesian space fall short in polar contexts. We introduce a hybrid approach combining overview+detail, small multiple, aggregation, and interactive filtering to enhance the Taylor and Mutual Information diagrams’ clarity and readability. This approach reduces visual clutter and improves the intuitive understanding of the polar charts. We demonstrate its effectiveness with a live version applied to three real-world data sets in two domains — climatology and machine learning. Our approach effectively mitigates overplotting in polar scatter charts, making their polar space more intuitive and accessible.
-
+> Placeholder
 
 ## Dependencies
 

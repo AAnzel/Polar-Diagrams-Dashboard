@@ -11,6 +11,7 @@ from dash import dcc, html, Input, Output, callback, State, Patch
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 _INT_CHART_WIDTH = 1400
@@ -30,6 +31,8 @@ _DICT_MI_PARAMETERS = dict(
     int_random_state=42)
 _FLOAT_MAX_R = 0.0
 _FLOAT_MAX_THETA = 0.0
+_TUPLE_MIN_MAX_ANGULAR = [0.0, 0.0]  # These are min and max values on angular
+_FLOAT_MAX_DISTANCE = 0.0  # This is either CRMSE, VI, or RVI
 _DICT_CLUSTER_MODEL = {}
 _LIST_MODEL_NAMES = []
 _STRING_REFERENCE_MODEL = 'Ground_Truth'
@@ -129,7 +132,7 @@ def _tuple_group_left_dataframe(df_left_input, string_reference_model):
 
 def _chart_create_left_chart(df_grouped_data, string_reference_model,
                              string_diagram_type, string_mid_type,
-                             string_relevant_measure):
+                             list_relevant_measures):
 
     chart_left = polar_diagrams.polar_diagrams._chart_create_diagram(
         [df_grouped_data],
@@ -137,6 +140,7 @@ def _chart_create_left_chart(df_grouped_data, string_reference_model,
         string_diagram_type=string_diagram_type,
         string_mid_type=string_mid_type,
         bool_normalized_measures=False)
+    string_relevant_measure = list_relevant_measures[-1]
 
     int_max_cluster = df_grouped_data['Cluster Count'].max()
     dict_left = chart_left.to_dict()
@@ -236,6 +240,9 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
         else:
             list_relevant_measures = ['Root Entropy', 'Normalized MI', 'RVI']
 
+    global _FLOAT_MAX_DISTANCE
+    _FLOAT_MAX_DISTANCE = df_left_input[list_relevant_measures[-1]].max() + 0.1
+
     tuple_hyperparam, np_array_labels = _grid_search(
         df_left_input,
         string_reference_model=string_reference_model,
@@ -247,7 +254,7 @@ def _tuple_create_initial_left_diagram(df_input, string_reference_model,
 
     chart_left, chart_left_size_legend = _chart_create_left_chart(
         df_left_grouped, string_reference_model, string_diagram_type,
-        string_mid_type, list_relevant_measures[-1])
+        string_mid_type, list_relevant_measures)
 
     return chart_left, chart_left_size_legend, dict_model_cluster
 
@@ -261,6 +268,10 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
     warnings.formatwarning = lambda msg, *args, **kwargs: str(msg)
 
     if string_diagram_type == 'mid':
+        if string_mid_type == 'scaled':
+            list_relevant_measures = ['Entropy', 'Scaled MI', 'VI']
+        else:
+            list_relevant_measures = ['Root Entropy', 'Normalized MI', 'RVI']
         with warnings.catch_warnings(record=True) as warning_tmp:
             # Cause all warnings to always be triggered.
             warnings.simplefilter("default")
@@ -275,6 +286,7 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
 
             list_warning_caught = warning_tmp
     else:
+        list_relevant_measures = ['Standard Deviation', 'Correlation', 'CRMSE']
         with warnings.catch_warnings(record=True) as warning_tmp:
             # Cause all warnings to always be triggered.
             warnings.simplefilter("default")
@@ -304,17 +316,57 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
                     html.Br()]
                 int_i += 1
 
-    return chart_right, list_warnings
+    global _FLOAT_MAX_R
+    global _FLOAT_MAX_THETA
+    global _LIST_MIN_MAX_ANGULAR
+    _FLOAT_MAX_R = chart_right['layout']['polar']['radialaxis']['range'][1]
+    _FLOAT_MAX_THETA = chart_right['layout']['polar']['sector'][1]
+    _LIST_MIN_MAX_ANGULAR = [chart_right['layout']['polar'][
+        'angularaxis']['ticktext'][0] - 0.1, chart_right['layout']['polar'][
+        'angularaxis']['ticktext'][-1] + 0.1]
+
+    # Creating a vertically stacked chart of 1d projections for all measures
+    chart_left_1d_projections = make_subplots(
+        rows=3, cols=1, subplot_titles=list_relevant_measures,
+        vertical_spacing=0.4)
+
+    # We traverse the diagram and capture the colors of each model
+    # This is needed for connecting the 1D projections with the diagram
+    dict_right = chart_right.to_dict()
+    for int_i in range(len(dict_right['data'])):
+        str_model_name = dict_right['data'][int_i]['name'].split('. ')[1]
+        dict_marker = dict_right['data'][int_i]['marker']
+        float_r_value = dict_right['data'][int_i]['customdata'][0][1]
+        float_theta_value = dict_right['data'][int_i]['customdata'][0][2]
+        float_distance = dict_right['data'][int_i]['customdata'][0][3]
+
+        list_single_model_measures = [float_r_value, float_theta_value,
+                                      float_distance]
+        for int_i, string_one_measure in enumerate(list_single_model_measures):
+            chart_left_1d_projections.add_trace(go.Scatter(
+                name=str_model_name,
+                x=[string_one_measure],
+                y=[0],
+                legendgroup=str_model_name,
+                showlegend=False,
+                mode='markers',
+                marker=dict_marker,
+                hoverlabel=dict(
+                    bgcolor='rgb(255,255,255)',
+                    bordercolor=dict_marker['color'],
+                    font=dict(color='rgb(0,0,0)'))),
+                row=int_i+1, col=1)
+
+    return chart_right, chart_left_1d_projections, list_warnings
 
 
-def _tuple_style_both_diagrams(chart_left, chart_right, dict_model_cluster):
+def _tuple_style_both_diagrams(chart_left, chart_left_1d_projections,
+                               chart_right, dict_model_cluster):
     # We use the same radial and angular axis range for both diagrams. This
     # fixes the edge cases where we have different axis ranges because of the
     # left overview diagram. This diagram can have for example the angular axis
     # 0-90 and not 0-180 as the right diagram because of the aggregation of
     # some models during clustering (thus aggregating their coordinates)
-    global _FLOAT_MAX_THETA
-    _FLOAT_MAX_THETA = chart_right['layout']['polar']['sector'][1]
 
     chart_left.update_layout(
         title=None,
@@ -367,7 +419,19 @@ def _tuple_style_both_diagrams(chart_left, chart_right, dict_model_cluster):
         height=_INT_CHART_HEIGHT - float_height_subtraction,
         margin=dict_margin)
 
-    return chart_left, chart_right
+    chart_left_1d_projections.update_xaxes(
+        showgrid=False, showline=False, ticklabelposition='inside top')
+    chart_left_1d_projections.update_yaxes(
+        showline=False, showgrid=False, zeroline=True, zerolinecolor='black',
+        zerolinewidth=1, showticklabels=False, ticks='')
+
+    chart_left_1d_projections.update_layout(
+        height=400, template='simple_white', dragmode=False, showlegend=False,
+        xaxis1=dict(range=[-0.1, _FLOAT_MAX_R]),
+        xaxis2=dict(range=_LIST_MIN_MAX_ANGULAR),
+        xaxis3=dict(range=[-0.1, _FLOAT_MAX_DISTANCE]))
+
+    return chart_left, chart_left_1d_projections, chart_right
 
 
 def _tuple_create_both_diagrams(df_input, string_reference_model,
@@ -390,16 +454,16 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
      dict_model_cluster) = _tuple_create_initial_left_diagram(
         df_input, string_reference_model, string_diagram_type, string_mid_type)
 
-    chart_right, list_warnings = _tuple_create_initial_right_diagram(
+    (chart_right, chart_left_1d_projections,
+     list_warnings) = _tuple_create_initial_right_diagram(
         df_input, string_reference_model, string_diagram_type, string_mid_type)
 
-    chart_left, chart_right = _tuple_style_both_diagrams(
-        chart_left, chart_right, dict_model_cluster)
+    (chart_left, chart_left_1d_projections,
+     chart_right) = _tuple_style_both_diagrams(
+        chart_left, chart_left_1d_projections, chart_right, dict_model_cluster)
 
-    global _FLOAT_MAX_R
     global _DICT_CLUSTER_MODEL
     global _LIST_MODEL_NAMES
-    _FLOAT_MAX_R = chart_left['layout']['polar']['radialaxis']['range'][1]
 
     _DICT_CLUSTER_MODEL = {}
     for string_model in dict_model_cluster:
@@ -412,7 +476,8 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
     _LIST_MODEL_NAMES = [dict_one_trace['name'].split('. ')[1]
                          for dict_one_trace in chart_right['data']]
 
-    return chart_left, chart_left_size_legend, chart_right, list_warnings
+    return (chart_left, chart_left_size_legend, chart_left_1d_projections,
+            chart_right, list_warnings)
 
 
 def _layout_return(bool_ml):
@@ -443,8 +508,8 @@ def _layout_return(bool_ml):
             discrete_models=False,
             int_random_state=42)
 
-    (chart_left, chart_left_size_legend, chart_right,
-     list_warnings) = _tuple_create_both_diagrams(
+    (chart_left, chart_left_size_legend, chart_left_1d_projections,
+     chart_right, list_warnings) = _tuple_create_both_diagrams(
          _DF_INPUT, _STRING_REFERENCE_MODEL, _STRING_DIAGRAM_TYPE,
          _STRING_MID_TYPE)
 
@@ -453,8 +518,8 @@ def _layout_return(bool_ml):
             html.Div(
                 html.H3("Overview"),
                 style={"font-family": 'open sans',
-                       'text-align': 'center', 'margin-bottom': 40,
-                       'margin-top': 80}),
+                       'text-align': 'center', 'margin-bottom': 20,
+                       'margin-top': 40}),
             dcc.Graph(
                 id="chart-left",
                 figure=chart_left,
@@ -478,14 +543,16 @@ def _layout_return(bool_ml):
                     'displaylogo': False,
                     'showAxisDragHandles': False},
                 style={'margin-bottom': 0, 'margin-top': 0}),
-            html.Div(
-                dbc.Alert(
-                    list_warnings,
-                    color="warning",
-                    id='alert-warnings',
-                    is_open=True if list_warnings else False,
-                    className="d-flex align-items-left",
-                    style={'margin-top': 30}))],
+            dcc.Graph(
+                id="chart-left-projections",
+                figure=chart_left_1d_projections,
+                config={
+                    'toImageButtonOptions': _DICT_FIGURE_SAVE_CONFIG,
+                    'modeBarButtonsToRemove': [
+                        'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
+                        'autoScale', 'resetScale'],
+                    'displaylogo': False,
+                    'showAxisDragHandles': False})],
             width=3,
             align='start',
             style={'margin-left': 0, 'margin-right': 0}),
@@ -493,8 +560,8 @@ def _layout_return(bool_ml):
             html.Div(
                 html.H3("Detail"),
                 style={"font-family": 'open sans',
-                       'text-align': 'center', 'margin-bottom': 40,
-                       'margin-top': 80}),
+                       'text-align': 'center', 'margin-bottom': 20,
+                       'margin-top': 40}),
             dcc.Graph(
                 id="chart-right",
                 figure=chart_right,
@@ -504,7 +571,15 @@ def _layout_return(bool_ml):
                         'zoom', 'pan', 'lasso', 'zoomIn', 'zoomOut', 'select',
                         'autoScale', 'resetScale'],
                     'displaylogo': False,
-                    'showAxisDragHandles': False})],
+                    'showAxisDragHandles': False}),
+            html.Div(
+                dbc.Alert(
+                    list_warnings,
+                    color="warning",
+                    id='alert-warnings',
+                    is_open=True if list_warnings else False,
+                    className="d-flex align-items-left",
+                    style={'margin-top': 30}))],
                 width=True,
                 align='start')
         ]
@@ -516,6 +591,8 @@ def _layout_return(bool_ml):
     Output(component_id="chart-left", component_property="figure",
            allow_duplicate=True),
     Output(component_id="chart-left-legend", component_property="figure",
+           allow_duplicate=True),
+    Output(component_id="chart-left-projections", component_property="figure",
            allow_duplicate=True),
     Output(component_id="chart-right", component_property="figure",
            allow_duplicate=True),
@@ -535,30 +612,35 @@ def update_output(string_selected_diagram_type):
         string_diagram_type = 'mid'
         string_mid_type = 'normalized'
 
-    (chart_left, chart_left_size_legend, chart_right,
-     list_warnings) = _tuple_create_both_diagrams(
+    (chart_left, chart_left_size_legend, chart_left_1d_projections,
+     chart_right, list_warnings) = _tuple_create_both_diagrams(
         _DF_INPUT, _STRING_REFERENCE_MODEL,
         string_diagram_type, string_mid_type)
 
     bool_is_open = True if list_warnings else False
 
-    return (chart_left, chart_left_size_legend, chart_right, list_warnings,
-            bool_is_open)
+    return (chart_left, chart_left_size_legend, chart_left_1d_projections,
+            chart_right, list_warnings, bool_is_open)
 
 
 @callback(
     Output(component_id="chart-left", component_property="figure",
            allow_duplicate=True),
+    Output(component_id="chart-left-projections", component_property="figure",
+           allow_duplicate=True),
     Output(component_id="chart-right", component_property="figure",
            allow_duplicate=True),
     Input(component_id="chart-left", component_property="relayoutData"),
     State('chart-left', 'figure'),
+    State('chart-left-projections', 'figure'),
     State('chart-right', 'figure'),
     prevent_initial_call=True
 )
-def _list_update_zooms(dict_selected_range, dict_left, dict_right):
+def _list_update_zooms(dict_selected_range, dict_left, dict_left_projections,
+                       dict_right):
 
     chart_left_updated = Patch()
+    chart_left_projections_updated = Patch()
     chart_right_updated = Patch()
 
     if dict_selected_range and (
@@ -614,14 +696,22 @@ def _list_update_zooms(dict_selected_range, dict_left, dict_right):
             chart_right_updated['layout']['polar']["radialaxis"][
                 "range"] = [dict_radial_range[0], dict_radial_range[1]]
 
-            # We update the legend with the selected points
+            # We update the legend with the selected points both on the right
+            # diagram and 1d projections on the left
             for int_i, dict_one_trace in enumerate(dict_right['data']):
                 if dict_radial_range[0] <= dict_one_trace['r'][0] <=\
                         dict_radial_range[1]:
                     chart_right_updated['data'][int_i]['visible'] = True
+
+                    for int_j in range(3):
+                        chart_left_projections_updated['data'][int_i*3+int_j][
+                            'visible'] = True
                 else:
                     chart_right_updated['data'][int_i][
                         'visible'] = 'legendonly'
+                    for int_j in range(3):
+                        chart_left_projections_updated['data'][int_i*3+int_j][
+                            'visible'] = False
 
         else:
             # We reset the color to black on doubleclick
@@ -640,9 +730,14 @@ def _list_update_zooms(dict_selected_range, dict_left, dict_right):
             chart_right_updated['layout']['polar']["radialaxis"][
                 "range"] = [dict_radial_range[0], _FLOAT_MAX_R]
 
-            # We also reset the legend trace visibility
+            # We also reset the legend trace visibility for both right diagram
+            # and left 1d projections
             for int_i, dict_one_trace in enumerate(dict_right['data']):
                 chart_right_updated['data'][int_i]['visible'] = True
+
+                for int_j in range(3):
+                    chart_left_projections_updated['data'][int_i*3+int_j][
+                        'visible'] = True
 
         chart_left_updated['layout']['polar']["radialaxis"][
             "autorange"] = False
@@ -658,4 +753,48 @@ def _list_update_zooms(dict_selected_range, dict_left, dict_right):
     else:
         raise PreventUpdate
 
-    return chart_left_updated, chart_right_updated
+    return (chart_left_updated, chart_left_projections_updated,
+            chart_right_updated)
+
+
+@callback(
+    Output(component_id="chart-left-projections", component_property="figure",
+           allow_duplicate=True),
+    Input(component_id="chart-right", component_property="restyleData"),
+    State('chart-left-projections', 'figure'),
+    State('chart-right', 'figure'),
+    prevent_initial_call=True,
+)
+def _list_update_legends(list_legend_points, dict_left_projections,
+                         dict_right):
+
+    chart_left_projections_updated = Patch()
+
+    # We check if we have an event and if the click was not empty
+    if list_legend_points and list_legend_points[0]:
+        # ----- One legend click gives the following output:
+        # [{"visible": ["legendonly"]}, [10]]
+        # [{"visible": [true]}, [1]]
+        # ----- Group click:
+        # [{'visible': ['legendonly', 'legendonly', True, True, 'legendonly',
+        #               'legendonly', 'legendonly', 'legendonly', 'legendonly',
+        #               'legendonly', 'legendonly', 'legendonly']},
+        #  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]
+        # ----- Empty legend click:
+        # [{}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]
+        if list_legend_points:
+            for int_i, int_legend_point in enumerate(list_legend_points[1]):
+                if isinstance(
+                    list_legend_points[0]['visible'][int_i],
+                        bool) and list_legend_points[0]['visible'][int_i]:
+                    bool_show_model = True
+                else:
+                    bool_show_model = False
+
+                for int_j in range(3):
+                    chart_left_projections_updated['data'][
+                        int_legend_point*3+int_j]['visible'] = bool_show_model
+    else:
+        raise PreventUpdate
+
+    return chart_left_projections_updated
