@@ -30,12 +30,17 @@ layout_first_row = dbc.Row([
                          'value': 'climate'
                          },
                         {'label': html.Span(
-                            '2. Overview+Detail - ML with Training Time',
+                            '2. Overview+Detail - Wine',
+                            style={'font-size': 20, 'padding-left': 12}),
+                         'value': 'wine'
+                         },
+                        {'label': html.Span(
+                            '3. Overview+Detail - ML with Training Time',
                             style={'font-size': 20, 'padding-left': 12}),
                          'value': 'ml'
                          },
                         {'label': html.Span(
-                            '3. Small Multiple - Gaussian Processes',
+                            '4. Small Multiple - Gaussian Processes',
                             style={'font-size': 20, 'padding-left': 12}),
                          'value': 'gp'
                          },
@@ -127,7 +132,18 @@ layout_first_row = dbc.Row([
                             target='_blank', style={'color': 'inherit'}),
                         ],
                        style={'font-size': 12, 'color': 'dimgray'}),
-                html.H6('2. Overview+Detail - ML with Training Time'),
+                html.H6('2. Overview+Detail - Wine'),
+                html.P(['Cortez, P., Cerdeira, A., Almeida, F., Matos, T., ' +
+                        '& Reis, J. (2009). Modeling wine preferences by ' +
+                        'data mining from physicochemical properties. In ' +
+                        'Decision Support Systems (Vol. 47, Issue 4, pp. ' +
+                        '547–553). Elsevier BV. ',
+                        html.A(
+                            'https://doi.org/10.1016/j.dss.2009.05.016',
+                            href='https://doi.org/10.1016/j.dss.2009.05.016',
+                            target='_blank', style={'color': 'inherit'})],
+                       style={'font-size': 12, 'color': 'dimgray'}),
+                html.H6('3. Overview+Detail - ML with Training Time'),
                 html.P(['Horton, P., & Nakai, K. (1996, June). A ' +
                         'probabilistic classification system for predicting ' +
                         'the cellular localization sites of proteins. In ' +
@@ -137,7 +153,7 @@ layout_first_row = dbc.Row([
                             href='https://dl.acm.org/doi/10.5555/645631.662879', # noqa
                             target='_blank', style={'color': 'inherit'})],
                        style={'font-size': 12, 'color': 'dimgray'}),
-                html.H6('3. Small Multiple - Gaussian Processes'),
+                html.H6('4. Small Multiple - Gaussian Processes'),
                 html.P(['Yang, Z., Dai, X., Dubey, A., Hirche, S., & Hattab,' +
                         'G. (2024). Whom to Trust? Elective Learning for ' +
                         'Distributed Gaussian Process Regression (Version ' +
@@ -168,7 +184,7 @@ layout_first_row = dbc.Row([
     dbc.Col(
         [
             html.Div(
-                html.H3("Polar Diagram Type"),
+                html.H3("Select diagram"),
                 style={"font-family": 'open sans'}),
             dcc.Dropdown(
                 options=[
@@ -232,10 +248,13 @@ dash_app.validation_layout = dbc.Container(
 )
 def display_main_content(string_button_value):
     if string_button_value == 'climate':
-        return (overview_detail._layout_return(False),
+        return (overview_detail._layout_return(0),
                 'Case Study - Climate', 'taylor')
+    elif string_button_value == 'wine':
+        return (overview_detail._layout_return(1),
+                'Case Study - Wine', 'taylor')
     elif string_button_value == 'ml':
-        return (overview_detail._layout_return(True),
+        return (overview_detail._layout_return(2),
                 'Case Study - ML with Training Time', 'taylor')
     elif string_button_value == 'gp':
         return (small_multiple._layout_return(),

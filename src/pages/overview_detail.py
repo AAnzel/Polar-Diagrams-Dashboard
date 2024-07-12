@@ -354,7 +354,8 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
                 hoverlabel=dict(
                     bgcolor='rgb(255,255,255)',
                     bordercolor=dict_marker['color'],
-                    font=dict(color='rgb(0,0,0)'))),
+                    font=dict(color='rgb(0,0,0)')),
+                hoverinfo="x"),
                 row=int_i+1, col=1)
 
     return chart_right, chart_left_1d_projections, list_warnings
@@ -480,9 +481,9 @@ def _tuple_create_both_diagrams(df_input, string_reference_model,
             chart_right, list_warnings)
 
 
-def _layout_return(bool_ml):
+def _layout_return(int_option):
     global _DF_INPUT, _STRING_REFERENCE_MODEL, _DICT_MI_PARAMETERS
-    if bool_ml:
+    if int_option == 2:
         _DF_INPUT = [
             pd.read_csv(os.path.join('..', 'data', 'Case_Study_Ecoli',
                                      'ecoli_evaluation.csv')),
@@ -496,6 +497,17 @@ def _layout_return(bool_ml):
             discrete_models=True,
             int_random_state=42)
 
+    elif int_option == 1:
+        _DF_INPUT = pd.read_csv(
+            os.path.join('..', 'data', 'Case_Study_Wine',
+                         'wine_sampled.csv'))
+        _STRING_REFERENCE_MODEL = 'Median'
+        _DICT_MI_PARAMETERS = dict(
+            string_entropy_method='auto',
+            int_mi_n_neighbors=3,
+            bool_discrete_reference_model=False,
+            discrete_models=False,
+            int_random_state=42)
     else:
         _DF_INPUT = pd.read_csv(
             os.path.join('..', 'data', 'Case_Study_Climate',

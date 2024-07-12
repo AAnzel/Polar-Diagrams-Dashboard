@@ -161,3 +161,6 @@ cython_debug/
 
 # MacOS Metadata
 .DS_Store
+
+# User study
+data/User_Study_*
