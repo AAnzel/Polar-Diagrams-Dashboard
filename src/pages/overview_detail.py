@@ -36,8 +36,8 @@ _FLOAT_MAX_DISTANCE = 0.0  # This is either CRMSE, VI, or RVI
 _DICT_CLUSTER_MODEL = {}
 _LIST_MODEL_NAMES = []
 _STRING_REFERENCE_MODEL = 'Ground_Truth'
-_STRING_DIAGRAM_TYPE = 'taylor'
-_STRING_MID_TYPE = 'normalized'
+_STRING_DIAGRAM_TYPE = 'mid'  # Default value on initial view
+_STRING_MID_TYPE = 'scaled'  # Default value on initial view
 
 
 def _grid_search(df_left_input, string_reference_model, list_measures):
