@@ -325,9 +325,25 @@ def _tuple_create_initial_right_diagram(df_input, string_reference_model,
         'angularaxis']['ticktext'][0] - 0.1, chart_right['layout']['polar'][
         'angularaxis']['ticktext'][-1] + 0.1]
 
+    # We need this to have readable Cartesian axis titles
+    dict_human_readable_measures = {
+        'CRMSE': 'Centered Root Mean Squared Error (CRMSE)',
+        'Scaled MI': 'Scaled Mutual Information (Scaled MI)',
+        'Normalized MI': 'Normalized Mutual Information (Normalized MI)',
+        'VI': 'Variation of Information (VI)',
+        'RVI': 'Root Variation of Information (RVI)'}
+    list_1d_projections_titles = []
+    for string_relevant_measure in list_relevant_measures:
+        if string_relevant_measure in dict_human_readable_measures:
+            list_1d_projections_titles.append(
+                string_relevant_measure.replace(
+                    string_relevant_measure,
+                    dict_human_readable_measures[string_relevant_measure]))
+        else:
+            list_1d_projections_titles.append(string_relevant_measure)
     # Creating a vertically stacked chart of 1d projections for all measures
     chart_left_1d_projections = make_subplots(
-        rows=3, cols=1, subplot_titles=list_relevant_measures,
+        rows=3, cols=1, subplot_titles=list_1d_projections_titles,
         vertical_spacing=0.4)
 
     # We traverse the diagram and capture the colors of each model

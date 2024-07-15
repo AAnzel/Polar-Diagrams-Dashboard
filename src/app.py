@@ -45,7 +45,7 @@ layout_first_row = dbc.Row([
                          'value': 'gp'
                          },
                         ],
-                    value='climate',
+                    value='wine',  # Default value on initial view
                     labelStyle={"display": "flex",
                                 "align-items": "center"},
                     id='radio_button',
@@ -193,7 +193,7 @@ layout_first_row = dbc.Row([
                         'value': 'mid scaled'},
                     {'label': 'Normalized Mutual Information Diagram',
                         'value': 'mid normalized'},],
-                value='taylor',
+                value='mid scaled',  # Default value on initial view
                 id='selected-diagram-type',
                 clearable=False,
                 searchable=False,
@@ -252,7 +252,7 @@ def display_main_content(string_button_value):
                 'Case Study - Climate', 'taylor')
     elif string_button_value == 'wine':
         return (overview_detail._layout_return(1),
-                'Case Study - Wine', 'taylor')
+                'Case Study - Wine', 'mid scaled')  # Default value on initial view # noqa
     elif string_button_value == 'ml':
         return (overview_detail._layout_return(2),
                 'Case Study - ML with Training Time', 'taylor')
