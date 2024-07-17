@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 from pages import overview_detail, small_multiple
 
 
+_USER_STUDY_FLAG = True  # We remove some options for a user study
 dash_app = Dash("Polar Diagrams Dashboard",
                 external_stylesheets=[dbc.themes.BOOTSTRAP,
                                       dbc.icons.FONT_AWESOME],
@@ -27,22 +28,22 @@ layout_first_row = dbc.Row([
                         {'label': html.Span(
                             '1. Overview+Detail - Climate',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'climate'
+                         'value': 'climate', 'disabled': _USER_STUDY_FLAG
                          },
                         {'label': html.Span(
                             '2. Overview+Detail - Wine',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'wine'
+                         'value': 'wine', 'disabled': True
                          },
                         {'label': html.Span(
                             '3. Overview+Detail - ML with Training Time',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'ml'
+                         'value': 'ml', 'disabled': _USER_STUDY_FLAG
                          },
                         {'label': html.Span(
                             '4. Small Multiple - Gaussian Processes',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'gp'
+                         'value': 'gp', 'disabled': _USER_STUDY_FLAG
                          },
                         ],
                     value='wine',  # Default value on initial view
@@ -188,11 +189,14 @@ layout_first_row = dbc.Row([
                 style={"font-family": 'open sans'}),
             dcc.Dropdown(
                 options=[
-                    {'label': 'Taylor Diagram', 'value': 'taylor'},
+                    {'label': 'Taylor Diagram', 'value': 'taylor',
+                     'disabled': _USER_STUDY_FLAG},
                     {'label': 'Scaled Mutual Information Diagram',
-                        'value': 'mid scaled'},
+                        'value': 'mid scaled',
+                        'disabled': True},
                     {'label': 'Normalized Mutual Information Diagram',
-                        'value': 'mid normalized'},],
+                        'value': 'mid normalized',
+                        'disabled': _USER_STUDY_FLAG}],
                 value='mid scaled',  # Default value on initial view
                 id='selected-diagram-type',
                 clearable=False,
