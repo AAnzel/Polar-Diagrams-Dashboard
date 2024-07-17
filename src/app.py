@@ -33,7 +33,7 @@ layout_first_row = dbc.Row([
                         {'label': html.Span(
                             '2. Overview+Detail - Wine',
                             style={'font-size': 20, 'padding-left': 12}),
-                         'value': 'wine', 'disabled': True
+                         'value': 'wine', 'disabled': False
                          },
                         {'label': html.Span(
                             '3. Overview+Detail - ML with Training Time',
@@ -193,7 +193,7 @@ layout_first_row = dbc.Row([
                      'disabled': _USER_STUDY_FLAG},
                     {'label': 'Scaled Mutual Information Diagram',
                         'value': 'mid scaled',
-                        'disabled': True},
+                        'disabled': False},
                     {'label': 'Normalized Mutual Information Diagram',
                         'value': 'mid normalized',
                         'disabled': _USER_STUDY_FLAG}],
