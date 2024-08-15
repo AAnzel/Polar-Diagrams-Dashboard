@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from pages import overview_detail, small_multiple
 
 
-_USER_STUDY_FLAG = True  # We remove some options for a user study
+_USER_STUDY_FLAG = False  # We remove some options for a user study
 dash_app = Dash("Polar Diagrams Dashboard",
                 external_stylesheets=[dbc.themes.BOOTSTRAP,
                                       dbc.icons.FONT_AWESOME],
