@@ -3,7 +3,7 @@
 
 This library is created for the following paper:
 
-***"Placeholder"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
+***"A Multi-Technique Strategy for Improving Summary Polar Diagrams"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
 
 Please cite the paper as:
 ```latex
@@ -13,7 +13,7 @@ Placeholder
 ---
 Abstract:
 
-> Placeholder
+> Though the polar system may lack the universal familiarity of the Cartesian counterpart, it remains indispensable for certain tasks. Summary polar diagrams, like the Taylor and mutual information diagrams, address tasks such as detecting relationships, visualizing data similarity, and quantifying correspondence. While these diagrams are invaluable tools for uncovering data relationships, their polar nature can hinder intuitiveness and lead to issues like overplotting. We introduce a hybrid approach combining overview+detail, aggregation, interactive filtering, Cartesian linking, and small multiple to enhance the diagrams' clarity, comprehensiveness, and abilities. We conducted a user study with 21 participants to assess the approach's effectiveness. Additionally, we engaged three domain experts in a pretest review, whose feedback contributed to refining the approach before the user study. The results demonstrate the versatility and advantages, enhancing comprehension and accessibility while mitigating issues, and expanding the diagrams' utility through small multiple integration.
 
 ## Dependencies
 
@@ -21,13 +21,14 @@ The code is written in Python 3.11.8 and tested on Linux with the following libr
 
 |Library|Version|
 |---|---|
-|numpy|1.26.4|
-|pandas|2.2.1|
-|scikit-learn|1.4.1.post1|
+|numpy|2.1.0|
+|pandas|2.2.2|
+|scikit-learn|1.5.1|
+|scipy|1.13.1|
 |polar_diagrams|1.2.0|
-|plotly|5.19.0|
+|plotly|5.22.0|
 |dash|2.14.2|
-|dash_bootstrap_components|1.5.0|
+|dash_bootstrap_components|1.6.0|
 |dash-tools|1.12.0|
 |gunicorn|21.2.0|
 
