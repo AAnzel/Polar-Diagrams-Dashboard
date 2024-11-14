@@ -11,15 +11,15 @@ dash_app = Dash("Polar Diagrams Dashboard",
                 meta_tags=[{"name": "viewport",
                             "content": "width=device-width"}],)
 dash_app.title = "Polar Diagrams Dashboard"
-# dash_app.css.config.serve_locally = True
+dash_app.css.config.serve_locally = True
 dash_app.scripts.config.serve_locally = True
 server = dash_app.server
 
 layout_first_row = dbc.Row([
     dbc.Col([
-        dbc.Button(className='fa-solid fa-bars fa-4x', id="open_offcanvas",
-                   n_clicks=0, color="light",
-                   style={'height': '90%', 'width': '100%'}),
+        dbc.Button(
+            class_name='fa-solid fa-bars fa-5x', id="open_offcanvas",
+            n_clicks=0, color="light"),
         dbc.Offcanvas(
             [
                 html.H4('Case Studies'),
@@ -166,14 +166,14 @@ layout_first_row = dbc.Row([
                        style={'font-size': 12, 'color': 'dimgray'})
                 ],
             id="offcanvas",
-            title=html.H2("Polar Diagrams Dashboard",
+            title=html.H2("Summary Polar Diagrams Dashboard",
                           style={'margin-bottom': 0}),
             is_open=False,
             style={'width': '25%', 'height': '100%'})],
             width=1,
             align='center',
             style={'margin-left': 0, 'margin-right': 0,
-                   'overflow': 'scroll'}),
+                   'text-align': 'center'}),
     dbc.Col(
         html.Div(
             html.H1("Case Study", id='main_title'),
