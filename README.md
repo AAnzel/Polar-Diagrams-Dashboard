@@ -3,7 +3,7 @@
 
 This library is created for the following paper:
 
-***"A Multi-Technique Strategy for Improving Summary Polar Diagrams"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
+***"A Multi-Technique Approach for Improving Summary Polar Diagrams"*** by Aleksandar Anžel, Zewen Yang, and Georges Hattab
 
 Please cite the paper as:
 ```latex
@@ -13,8 +13,7 @@ Placeholder
 ---
 Abstract:
 
-> While the polar system may lack the universal familiarity of its Cartesian counterpart, it remains indispensable for certain tasks. Summary polar diagrams, such as Taylor and mutual information diagrams, address tasks like discovering relationships, visualizing data similarity, and quantifying correspondence. Although these diagrams are invaluable tools for uncovering data relationships, their polar nature can hinder intuitiveness and lead to issues like overplotting.
-We present a hybrid approach that combines overview+detail, aggregation, interactive filtering, Cartesian linking, and small multiples to enhance the clarity, comprehensiveness, and functionality of summary polar diagrams. We conducted a user study with 21 participants to evaluate the effectiveness of this approach. Furthermore, we engaged three domain experts in a pretest review, whose feedback helped refine the approach prior to the user study. Altogether, the results highlight the versatility and benefits of summary polar diagrams by enhancing comprehension and accessibility, addressing challenges, and broadening their utility.
+> While the polar system may lack the universal familiarity of its Cartesian counterpart, it remains indispensable for certain tasks. Summary polar diagrams, such as Taylor and mutual information diagrams, address tasks like discovering relationships, visualizing data similarity, and quantifying correspondence. Although these diagrams are invaluable tools for uncovering data relationships, their polar nature can hinder intuitiveness and lead to issues like overplotting. We present a hybrid approach that combines overview+detail, aggregation, interactive filtering, Cartesian linking, and small multiples to enhance the clarity, comprehensiveness, and functionality of summary polar diagrams. We performed a user study to assess this approach's effectiveness, noting comparable response times among participants. Additionally, three domain experts with varying visualization experience reviewed an implemented solution applying summary polar diagrams to climate, data science (novel), and machine learning, refining the approach prior to the user study. The findings underscore the versatility of our approach in enhancing comprehension, accessibility, and utility.
 
 ## Dependencies
 
