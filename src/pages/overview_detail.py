@@ -1,4 +1,3 @@
-import itertools
 import os
 import warnings
 
@@ -11,7 +10,7 @@ from dash import Input, Output, Patch, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 from sklearn.cluster import DBSCAN
-from sklearn.metrics import silhouette_score
+from sklearn.neighbors import NearestNeighbors
 
 _INT_CHART_WIDTH = 1400
 _INT_CHART_HEIGHT = 500
@@ -39,54 +38,60 @@ _STRING_DIAGRAM_TYPE = "mid"  # Default value on initial view
 _STRING_MID_TYPE = "scaled"  # Default value on initial view
 
 
+def _auto_dbscan(X):
+    int_n_dims = X.shape[1]
+    int_n_samples = X.shape[0]
+
+    # Dynamic k: standard heuristic
+    int_k = max(2, min(2 * int_n_dims - 1, int(np.log(int_n_samples))))
+
+    nbrs = NearestNeighbors(n_neighbors=int_k).fit(X)
+    distances, _ = nbrs.kneighbors(X)
+    k_distances = np.sort(distances[:, int_k - 1])
+
+    # Elbow detection
+    np_diffs = np.diff(k_distances)
+    elbow_idx = np.argmax(np.diff(np_diffs)) + 1
+    float_eps = k_distances[elbow_idx]
+
+    int_min_pts = int_k
+
+    print(
+        f"Dataset: {int_n_samples} pts, {int_n_dims} dims → "
+        f"k={int_k}, ε={float_eps:.3f}, minPts={int_min_pts}"
+    )
+    return float_eps, int_min_pts
+
+
 def _grid_search(df_left_input, string_reference_model, list_measures):
 
     # We save the row with the reference model
     df_reference_row = df_left_input.loc[
         df_left_input["Model"] == string_reference_model
     ]
+
     # We remove the reference row from the dataframe
     df_input_no_reference = df_left_input.drop(df_reference_row.index)[
         list_measures
     ]
 
-    list_min_samples = np.arange(2, 15, step=2)
-    # TODO: Improve choosing epsilon depending on the data
-    list_epsilons = np.linspace(0.01, 10, num=50)
-    list_hyperparam = list(itertools.product(list_epsilons, list_min_samples))
+    float_eps, int_min_samples = _auto_dbscan(df_input_no_reference)
 
-    list_scores = []
-    list_labels_over_runs = []
+    constructor_DBSCAN = DBSCAN(
+        eps=float_eps, min_samples=int_min_samples, n_jobs=-1
+    )
+    constructor_DBSCAN.fit_predict(df_input_no_reference)
+    list_labels = list(constructor_DBSCAN.labels_)
 
-    for i, (float_eps, int_min_samples) in enumerate(list_hyperparam):
-        constructor_DBSCAN = DBSCAN(
-            eps=float_eps, min_samples=int_min_samples, n_jobs=-1
-        )
-        constructor_DBSCAN.fit_predict(df_input_no_reference)
-        list_labels = constructor_DBSCAN.labels_
-        # We check if we have all outliers or all elements in seperate clusters
-        # These are the edge cases which we do not want
-        if len(set(list_labels)) == 1 or (
-            len(set(list_labels)) == len(list_labels)
-        ):
-            continue
-
-        list_scores.append(silhouette_score(df_input_no_reference, list_labels))
-        list_labels_over_runs.append(list_labels)
-
-    int_best_score_index = np.argmax(list_scores)
-    np_array_best_labels = list(list_labels_over_runs[int_best_score_index])
     # We add the label for the reference model at the same place that model
     # was before we removed the entire row it was contained in
     # We add a value of df_input.shape[0] because the model must not be a part
     # of any cluster
-    np_array_best_labels.insert(
-        df_reference_row.index.values[0], df_left_input.shape[0]
-    )
+    list_labels.insert(df_reference_row.index.values[0], df_left_input.shape[0])
 
-    tuple_best_hyperparam = list_hyperparam[int_best_score_index]
+    tuple_best_hyperparam = (float_eps, int_min_samples)
 
-    return tuple_best_hyperparam, np_array_best_labels
+    return tuple_best_hyperparam, list_labels
 
 
 def _tuple_group_left_dataframe(df_left_input, string_reference_model):
