@@ -1,0 +1,17 @@
+name: polar_dashboard_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.7
+  - numpy
+  - pandas
+  - scikit-learn
+  - plotly
+  - scipy
+  - gunicorn
+  - dash
+  - pip # Ensure pip is installed in conda environment to handle pip packages.
+  - pip:
+      - dash_bootstrap_components
+      - polar_diagrams
+      - dash-tools

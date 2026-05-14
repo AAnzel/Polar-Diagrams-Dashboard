@@ -1,0 +1,14 @@
+name: polar_analysis_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - numpy
+  - pandas
+  - jupyterlab
+  - scikit-learn
+  - statsmodels
+  - plotly
+  - matplotlib
+  - scipy
+  - python-kaleido
