@@ -12,3 +12,6 @@ dependencies:
   - matplotlib
   - scipy
   - python-kaleido
+  - pip
+  - pip:
+      - polar_diagrams

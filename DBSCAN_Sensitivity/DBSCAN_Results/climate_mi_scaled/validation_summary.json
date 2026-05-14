@@ -1,0 +1,20 @@
+{
+  "dataset_name": "climate_mi_scaled",
+  "reference_model": "Observation",
+  "n_input_rows": 8,
+  "n_clustered_rows": 7,
+  "n_measures": 3,
+  "eps0": 0.08717158664269849,
+  "min_samples0": 2,
+  "n_clusters": 1,
+  "n_noise": 5,
+  "noise_frac": 0.7142857142857143,
+  "n_core": 2,
+  "n_border": 0,
+  "silhouette": null,
+  "davies_bouldin": null,
+  "calinski_harabasz": null,
+  "bootstrap_ari_mean": 0.49,
+  "bootstrap_ari_std": 0.5024183937956913,
+  "bootstrap_ari_median": 0.0
+}
