@@ -38,7 +38,7 @@ _STRING_DIAGRAM_TYPE = "mid"  # Default value on initial view
 _STRING_MID_TYPE = "scaled"  # Default value on initial view
 
 
-def _auto_dbscan(X):
+def _auto_dbscan(X, string_dataset, string_measure):
     int_n_dims = X.shape[1]
     int_n_samples = X.shape[0]
 
@@ -57,13 +57,19 @@ def _auto_dbscan(X):
     int_min_pts = int_k
 
     print(
+        "\nDBSCAN Analysis\n" + string_dataset + " |  " + string_measure + "\n",
         f"Dataset: {int_n_samples} pts, {int_n_dims} dims → "
-        f"k={int_k}, ε={float_eps:.3f}, minPts={int_min_pts}"
+        f"k={int_k}, ε={float_eps:.3f}, minPts={int_min_pts}\n",
     )
     return float_eps, int_min_pts
 
 
-def _grid_search(df_left_input, string_reference_model, list_measures):
+def _grid_search(
+    df_left_input,
+    string_dataset,
+    string_reference_model,
+    list_measures,
+):
 
     # We save the row with the reference model
     df_reference_row = df_left_input.loc[
@@ -75,7 +81,9 @@ def _grid_search(df_left_input, string_reference_model, list_measures):
         list_measures
     ]
 
-    float_eps, int_min_samples = _auto_dbscan(df_input_no_reference)
+    float_eps, int_min_samples = _auto_dbscan(
+        df_input_no_reference, string_dataset, list_measures[1]
+    )
 
     constructor_DBSCAN = DBSCAN(
         eps=float_eps, min_samples=int_min_samples, n_jobs=-1
@@ -89,9 +97,7 @@ def _grid_search(df_left_input, string_reference_model, list_measures):
     # of any cluster
     list_labels.insert(df_reference_row.index.values[0], df_left_input.shape[0])
 
-    tuple_best_hyperparam = (float_eps, int_min_samples)
-
-    return tuple_best_hyperparam, list_labels
+    return list_labels
 
 
 def _tuple_group_left_dataframe(df_left_input, string_reference_model):
@@ -259,7 +265,11 @@ def _chart_create_left_chart(
 
 
 def _tuple_create_initial_left_diagram(
-    df_input, string_reference_model, string_diagram_type, string_mid_type
+    df_input,
+    string_reference_model,
+    string_dataset,
+    string_diagram_type,
+    string_mid_type,
 ):
     # Here we create a DataFrame for the left chart with the clustered models
     # First we check if this is a list
@@ -303,11 +313,13 @@ def _tuple_create_initial_left_diagram(
     global _FLOAT_MAX_DISTANCE
     _FLOAT_MAX_DISTANCE = df_left_input[list_relevant_measures[-1]].max() + 0.1
 
-    tuple_hyperparam, np_array_labels = _grid_search(
+    np_array_labels = _grid_search(
         df_left_input,
+        string_dataset,
         string_reference_model=string_reference_model,
         list_measures=list_relevant_measures,
     )
+
     df_left_input["Label"] = np_array_labels
 
     df_left_grouped, dict_model_cluster = _tuple_group_left_dataframe(
@@ -572,6 +584,7 @@ def _tuple_style_both_diagrams(
 def _tuple_create_both_diagrams(
     df_input,
     string_reference_model,
+    string_dataset,
     string_diagram_type="taylor",
     string_mid_type="normalized",
 ):
@@ -593,6 +606,7 @@ def _tuple_create_both_diagrams(
         _tuple_create_initial_left_diagram(
             df_input,
             string_reference_model,
+            string_dataset,  # Using it to save the best DBSCAN parameters
             string_diagram_type,
             string_mid_type,
         )
@@ -642,12 +656,17 @@ def _tuple_create_both_diagrams(
 
 
 def _layout_return(int_option):
-    global _DF_INPUT, _STRING_REFERENCE_MODEL, _DICT_MI_PARAMETERS
+    global \
+        _DF_INPUT, \
+        _STRING_DATASET, \
+        _STRING_REFERENCE_MODEL, \
+        _DICT_MI_PARAMETERS
     if int_option == 2:
+        _STRING_DATASET = "Case_Study_Ecoli"
         _DF_INPUT = [
             pd.read_csv(
                 os.path.join(
-                    "..", "data", "Case_Study_Ecoli", "ecoli_evaluation.csv"
+                    "..", "data", _STRING_DATASET, "ecoli_evaluation.csv"
                 )
             ),
             pd.read_csv(
@@ -669,8 +688,9 @@ def _layout_return(int_option):
         )
 
     elif int_option == 1:
+        _STRING_DATASET = "Case_Study_Wine"
         _DF_INPUT = pd.read_csv(
-            os.path.join("..", "data", "Case_Study_Wine", "wine_sampled.csv")
+            os.path.join("..", "data", _STRING_DATASET, "wine_sampled.csv")
         )
         _STRING_REFERENCE_MODEL = "Median"
         _DICT_MI_PARAMETERS = dict(
@@ -681,9 +701,10 @@ def _layout_return(int_option):
             int_random_state=42,
         )
     else:
+        _STRING_DATASET = "Case_Study_Climate"
         _DF_INPUT = pd.read_csv(
             os.path.join(
-                "..", "data", "Case_Study_Climate", "climate_models_temp.csv"
+                "..", "data", _STRING_DATASET, "climate_models_temp.csv"
             )
         )
         _STRING_REFERENCE_MODEL = "Observation"
@@ -704,6 +725,7 @@ def _layout_return(int_option):
     ) = _tuple_create_both_diagrams(
         _DF_INPUT,
         _STRING_REFERENCE_MODEL,
+        _STRING_DATASET,
         _STRING_DIAGRAM_TYPE,
         _STRING_MID_TYPE,
     )
@@ -877,7 +899,11 @@ def update_output(string_selected_diagram_type):
         chart_right,
         list_warnings,
     ) = _tuple_create_both_diagrams(
-        _DF_INPUT, _STRING_REFERENCE_MODEL, string_diagram_type, string_mid_type
+        _DF_INPUT,
+        _STRING_REFERENCE_MODEL,
+        _STRING_DATASET,
+        string_diagram_type,
+        string_mid_type,
     )
 
     bool_is_open = True if list_warnings else False
