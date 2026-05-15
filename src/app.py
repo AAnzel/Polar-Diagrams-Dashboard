@@ -73,6 +73,17 @@ layout_first_row = dbc.Row(
                                     "value": "gp",
                                     "disabled": _USER_STUDY_FLAG,
                                 },
+                                {
+                                    "label": html.Span(
+                                        "5. Overview+Detail - Cluttered Wine",
+                                        style={
+                                            "font-size": 20,
+                                            "padding-left": 12,
+                                        },
+                                    ),
+                                    "value": "clutter",
+                                    "disabled": _USER_STUDY_FLAG,
+                                },
                             ],
                             value="wine",  # Default value on initial view
                             labelStyle={
@@ -380,6 +391,12 @@ def display_main_content(string_button_value):
             small_multiple._layout_return(),
             "Case Study - Gaussian Processes",
             "taylor",
+        )
+    elif string_button_value == "clutter":
+        return (
+            overview_detail._layout_return(3),
+            "Case Study - Cluttered Wine",
+            "mid scaled",
         )
     else:
         return "404"

@@ -256,7 +256,7 @@ def _chart_create_left_chart(
         template="simple_white",
         dragmode=False,
         hovermode=False,
-        width=round(_INT_CHART_WIDTH / 3.6),
+        width=round(_INT_CHART_WIDTH / 3.3),
         height=110,
         margin={"r": 50, "l": 130, "t": 0, "b": 0},
     )
@@ -691,6 +691,19 @@ def _layout_return(int_option):
         _STRING_DATASET = "Case_Study_Wine"
         _DF_INPUT = pd.read_csv(
             os.path.join("..", "data", _STRING_DATASET, "wine_sampled.csv")
+        )
+        _STRING_REFERENCE_MODEL = "Median"
+        _DICT_MI_PARAMETERS = dict(
+            string_entropy_method="auto",
+            int_mi_n_neighbors=3,
+            bool_discrete_reference_model=False,
+            discrete_models=False,
+            int_random_state=42,
+        )
+    elif int_option == 3:
+        _STRING_DATASET = "Case_Study_Cluttered_Wine"
+        _DF_INPUT = pd.read_csv(
+            os.path.join("..", "data", _STRING_DATASET, "wine_cluttered.csv")
         )
         _STRING_REFERENCE_MODEL = "Median"
         _DICT_MI_PARAMETERS = dict(
